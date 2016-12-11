@@ -19,6 +19,7 @@ def call(body) {
 }
 
 def origin() {
+    println "TITE: Anybody home ??"
     node('maven') {
         sh "env"
 
@@ -37,6 +38,7 @@ def origin() {
         sh "${mvnCmd} clean install -DskipTests=true"
 
         stage 'Test and Analysis'
+        //noinspection GroovyAssignabilityCheck
         parallel (
                 'Test': {
                     sh "${mvnCmd} test"
