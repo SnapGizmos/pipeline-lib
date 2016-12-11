@@ -31,11 +31,10 @@ def origin(body) {
         // def mvnCmd = "mvn -s configuration/cicd-settings.xml"
         def mvnCmd = "mvn -s settings.xml"
 
-        stage 'Build' {
-            println("TITE: hey ... checking out")
-            // git branch: 'master', url: 'http://gogs:3000/gogs/config-server-poc.git'
-            checkout scm
-        }
+        stage 'Build'
+        println("TITE: hey ... checking out")
+        // git branch: 'master', url: 'http://gogs:3000/gogs/config-server-poc.git'
+        checkout scm
 
         stage 'Deploy DEV'
         sh "alias oc=${ocCmd}"
