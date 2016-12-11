@@ -42,6 +42,7 @@ def origin(body) {
 
         stage('Deploy DEV') {
             sh "oc get pods -n ${config.namespace}"
+            sh "oc projects"
             sh "alias oc=${ocCmd}"
             sh "bin/render-template.sh dev"
             sh "alias oc=oc"
