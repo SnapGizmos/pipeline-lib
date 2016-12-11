@@ -34,12 +34,26 @@ def origin(body) {
         // def mvnCmd = "mvn -s configuration/cicd-settings.xml"
         def mvnCmd = "mvn -s settings.xml"
 
-        stage('Build') {
+        stage('Checkout') {
             println("TITE: hey ... checking out")
             // git branch: 'master', url: 'http://gogs:3000/gogs/config-server-poc.git'
             checkout scm
         }
 
+        if ('Build' in config.targetStages)
+        stage('Build') {
+            def v = version()
+            sh "${mvnCmd} clean install -DskipTests=true"
+        }
+
+        if ('Push to Nexus' in config.targetStages)
+        stage('Push to Nexus') {
+            //configFileProvider([configFile(fileId: '00045d94-5f1a-4647-96d2-1172f422be0a', targetLocation: 'settings.xml', variable: 'NEXUS_SETTINGS')]) {
+            //// some block
+            sh "${mvnCmd} deploy -DskipTests=true"
+        }
+
+        if ('Deploy DEV' in config.targetStages)
         stage('Deploy DEV') {
             sh "oc get pods -n ${config.namespace}"
             sh "oc projects"
