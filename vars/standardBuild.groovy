@@ -17,3 +17,7 @@ def call(body) {
         }
     }
 }
+
+def origin() {
+
+}
