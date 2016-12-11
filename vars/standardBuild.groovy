@@ -24,7 +24,9 @@ def origin(body) {
     body.delegate = config
     body()
     node() {
-        sh "env"
+        if (config.showEnv) {
+            sh "env"
+        }
         println("TITE: got targest: ${config.targetStages}")
 
         // define commands
@@ -32,17 +34,16 @@ def origin(body) {
         // def mvnCmd = "mvn -s configuration/cicd-settings.xml"
         def mvnCmd = "mvn -s settings.xml"
 
-        stage 'Checkout' {
+        stage('Build') {
             println("TITE: hey ... checking out")
             // git branch: 'master', url: 'http://gogs:3000/gogs/config-server-poc.git'
             checkout scm
         }
 
-        stage 'Deploy DEV' {
-            sh "alias oc=${ocCmd}"
-            sh "bin/render-template.sh dev"
-            sh "alias oc=oc"
-        }
+        stage 'Deploy DEV'
+        sh "alias oc=${ocCmd}"
+        sh "bin/render-template.sh dev"
+        sh "alias oc=oc"
         sh "rm -rf oc-build && mkdir -p oc-build/deployments"
         sh "cp target/openshift-tasks.war oc-build/deployments/ROOT.war"
         // clean up. keep the image stream
