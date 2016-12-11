@@ -20,10 +20,13 @@ def call(body) {
 
 def origin(body) {
     def config = [:]
+    def nodetype
+
     body.resolveStrategy = Closure.DELEGATE_FIRST
     body.delegate = config
     body()
-    node() {
+    if ('Build' in config.targetStages) nodetype = 'maven'
+    node(nodetype) {
         if (config.showEnv) {
             sh "env"
         }
