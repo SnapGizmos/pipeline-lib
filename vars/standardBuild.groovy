@@ -27,8 +27,6 @@ def origin() {
         // def mvnCmd = "mvn -s configuration/cicd-settings.xml"
         def mvnCmd = "mvn -s settings.xml"
 
-        new File(".").eachFile() { file -> println file.getAbsolutePath() }
-
         stage 'Build'
         git branch: 'master', url: 'http://gogs:3000/gogs/config-server-poc.git'
 
