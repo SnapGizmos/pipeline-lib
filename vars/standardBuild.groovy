@@ -40,31 +40,34 @@ def origin(body) {
             checkout scm
         }
 
-        stage 'Deploy DEV'
-        sh "alias oc=${ocCmd}"
-        sh "bin/render-template.sh dev"
-        sh "alias oc=oc"
-        sh "rm -rf oc-build && mkdir -p oc-build/deployments"
-        sh "cp target/openshift-tasks.war oc-build/deployments/ROOT.war"
-        // clean up. keep the image stream
-        sh "${ocCmd} delete bc,dc,svc,route -l app=tasks -n dev"
-        // create build. override the exit code since it complains about exising imagestream
-        sh "${ocCmd} new-build --name=tasks --image-stream=jboss-eap70-openshift --binary=true --labels=app=tasks -n dev || true"
-        // build image
-        sh "${ocCmd} start-build tasks --from-dir=oc-build --wait=true -n dev"
-        // deploy image
-        sh "${ocCmd} new-app tasks:latest -n dev"
-        sh "${ocCmd} expose svc/tasks -n dev"
+        stage('Deploy DEV') {
+            sh "oc get pods -n ${config.namespace}"
+            sh "alias oc=${ocCmd}"
+            sh "bin/render-template.sh dev"
+            sh "alias oc=oc"
+            sh "rm -rf oc-build && mkdir -p oc-build/deployments"
+            sh "cp target/openshift-tasks.war oc-build/deployments/ROOT.war"
+            // clean up. keep the image stream
+            sh "${ocCmd} delete bc,dc,svc,route -l app=tasks -n dev"
+            // create build. override the exit code since it complains about exising imagestream
+            sh "${ocCmd} new-build --name=tasks --image-stream=jboss-eap70-openshift --binary=true --labels=app=tasks -n dev || true"
+            // build image
+            sh "${ocCmd} start-build tasks --from-dir=oc-build --wait=true -n dev"
+            // deploy image
+            sh "${ocCmd} new-app tasks:latest -n dev"
+            sh "${ocCmd} expose svc/tasks -n dev"
+        }
 
-        stage 'Deploy STAGE'
-        input message: "Promote to STAGE?", ok: "Promote"
-        // tag for stage
-        sh "${ocCmd} tag dev/tasks:latest stage/tasks:${v}"
-        // clean up. keep the imagestream
-        sh "${ocCmd} delete bc,dc,svc,route -l app=tasks -n stage"
-        // deploy stage image
-        sh "${ocCmd} new-app tasks:${v} -n stage"
-        sh "${ocCmd} expose svc/tasks -n stage"
+        stage('Deploy STAGE') {
+            input message: "Promote to STAGE?", ok: "Promote"
+            // tag for stage
+            sh "${ocCmd} tag dev/tasks:latest stage/tasks:${v}"
+            // clean up. keep the imagestream
+            sh "${ocCmd} delete bc,dc,svc,route -l app=tasks -n stage"
+            // deploy stage image
+            sh "${ocCmd} new-app tasks:${v} -n stage"
+            sh "${ocCmd} expose svc/tasks -n stage"
+        }
     }
 }
 
