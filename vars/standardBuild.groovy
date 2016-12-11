@@ -19,10 +19,6 @@ def call(body) {
 }
 
 def origin() {
-//    println "TITE: Anybody home ??"
-    scriptFile = getClass().protectionDomain.codeSource.location.path
-    println "TITE: ${this} before node running ${scriptFile} "
-
     node('maven') {
         sh "env"
 
@@ -36,13 +32,11 @@ def origin() {
         }
 
         stage 'Build'
-//        git branch: 'master', url: 'http://gogs:3000/gogs/config-server-poc.git'
-        checkout scm
+        git branch: 'master', url: 'http://gogs:3000/gogs/config-server-poc.git'
         def v = version()
         sh "${mvnCmd} clean install -DskipTests=true"
 
         stage 'Test and Analysis'
-        //noinspection GroovyAssignabilityCheck
         parallel (
                 'Test': {
                     sh "${mvnCmd} test"
