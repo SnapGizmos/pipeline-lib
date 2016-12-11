@@ -19,7 +19,10 @@ def call(body) {
 }
 
 def origin() {
-    println "TITE: Anybody home ??"
+//    println "TITE: Anybody home ??"
+    scriptFile = getClass().protectionDomain.codeSource.location.path
+    println "TITE: ${this} before node running ${scriptFile} "
+
     node('maven') {
         sh "env"
 
@@ -33,7 +36,8 @@ def origin() {
         }
 
         stage 'Build'
-        git branch: 'master', url: 'http://gogs:3000/gogs/config-server-poc.git'
+//        git branch: 'master', url: 'http://gogs:3000/gogs/config-server-poc.git'
+        checkout scm
         def v = version()
         sh "${mvnCmd} clean install -DskipTests=true"
 
@@ -86,5 +90,5 @@ def origin() {
 
 def version() {
     def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
-    matcher ? matcher[0][1 as String] : null
+    matcher ? matcher[0][1] : null
 }
