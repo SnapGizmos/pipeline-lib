@@ -18,7 +18,11 @@ def call(body) {
     }
 }
 
-def origin() {
+def origin(body) {
+    def config = [:]
+    body.resolveStrategy = Closure.DELEGATE_FIRST
+    body.delegate = config
+    body()
     node() {
         sh "env"
 
@@ -27,8 +31,11 @@ def origin() {
         // def mvnCmd = "mvn -s configuration/cicd-settings.xml"
         def mvnCmd = "mvn -s settings.xml"
 
-        stage 'Build'
-        git branch: 'master', url: 'http://gogs:3000/gogs/config-server-poc.git'
+        stage 'Build' {
+            println("TITE: hey ... checking out")
+            // git branch: 'master', url: 'http://gogs:3000/gogs/config-server-poc.git'
+            checkout scm
+        }
 
         stage 'Deploy DEV'
         sh "alias oc=${ocCmd}"
