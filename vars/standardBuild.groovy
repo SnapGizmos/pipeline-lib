@@ -60,9 +60,8 @@ def origin(body) {
         stage('Deploy DEV') {
             sh "oc get pods -n ${config.namespace}"
             sh "oc projects"
-            sh "alias oc=${ocCmd}"
-            sh "bin/render-template.sh dev"
-            sh "alias oc=oc"
+            sh "export ARTIFACT_URL=http://nexus-poclab.h.svc.tite.lan/service/local/artifact/maven/redirect?r=snapshots&g=${group()}&a=${artifact()}&v=${version()}"
+            sh "bin/render-template.sh ${config.namespace}"
             sh "rm -rf oc-build && mkdir -p oc-build/deployments"
             sh "cp target/openshift-tasks.war oc-build/deployments/ROOT.war"
             // clean up. keep the image stream
@@ -92,6 +91,14 @@ def origin(body) {
 
 def version() {
     def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
+    matcher ? matcher[0][1] : null
+}
+def artifact() {
+    def matcher = readFile('pom.xml') =~ '<artifactId>(.+)</artifactId>'
+    matcher ? matcher[0][1] : null
+}
+def group() {
+    def matcher = readFile('pom.xml') =~ '<groupId>(.+)</groupId>'
     matcher ? matcher[0][1] : null
 }
 
