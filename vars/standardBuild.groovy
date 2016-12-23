@@ -72,7 +72,7 @@ def origin(body) {
             for (itm in config.environment) {
                 println "going over ${itm.key}=${itm.value} for "+System.getenv('WORKSPACE')
 //                sh "echo ${itm.key}=${itm.value} >> $WORKSPACE/openshift/env"
-                params="${params}${itm.key}=\"${itm.value}\"\n"
+                params="${params}${itm.key}=\'${itm.value}\'\n"
             }
             sh "echo params ${params} "
 
