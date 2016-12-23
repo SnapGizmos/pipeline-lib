@@ -60,7 +60,11 @@ def origin(body) {
         stage('Deploy DEV') {
             sh "oc get pods -n ${config.namespace}"
             sh "oc projects"
-            sh "export ARTIFACT_URL=http://nexus-poclab.h.svc.tite.lan/service/local/artifact/maven/redirect?r=snapshots\&g=${group()}\&a=${artifact()}\&v=${version()}"
+            #Maybe the ARTIFACT_URL could be rendered based on pom.xml
+            # nexus.h.svc.tite.lan/service/local/artifact/maven/redirect?r=snapshots\&g=${group()}\&a=${artifact()}\&v=${version()}"
+            config.environment.each { key, value ->
+                sh "export ${key}=${value}"
+            }
             sh "bin/render-template.sh ${config.namespace}"
             sh "rm -rf oc-build && mkdir -p oc-build/deployments"
             sh "cp target/openshift-tasks.war oc-build/deployments/ROOT.war"
