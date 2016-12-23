@@ -77,6 +77,13 @@ def origin(body) {
             sh "echo params ${params} "
 
             writeFile file:'openshift/env', text: params
+            sh "cat $WORKSPACE/openshift/env "
+
+            tokeyValue = {
+                it.collect { /$it.key="$it.value"/ } join "\n"
+            }
+            println "tokeyValue is "+tokeyValue(environment)
+
             sh "bin/render-template.sh ${config.namespace}"
 
             /** old crap **
