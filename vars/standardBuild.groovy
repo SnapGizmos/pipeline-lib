@@ -65,8 +65,8 @@ def origin(body) {
              nexus.h.svc.tite.lan/service/local/artifact/maven/redirect?r=snapshots\&g=${group()}\&a=${artifact()}\&v=${version()}"
              /** **/
             // def params=''
-            def f = new File('openshift/env')
-            def f2 = new File('openshift')
+            def f = new File(System.getProperty('WORKSPACE') + '/openshift/env')
+            def f2 = new File(System.getProperty('WORKSPACE') + '/openshift')
             println "TITE: pwd 2 " + f2.getAbsolutePath()
             println("TITE: gwd "+System.getProperty("user.dir"))
             f2.eachFileRecurse { println it.name }
