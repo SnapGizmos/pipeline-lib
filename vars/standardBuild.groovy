@@ -82,7 +82,7 @@ def origin(body) {
             tokeyValue = {
                 it.collect { /$it.key="$it.value"/ } join "\n"
             }
-            println "tokeyValue is "+tokeyValue(environment)
+            println "tokeyValue is \n"+tokeyValue(config.environment)
 
             sh "bin/render-template.sh ${config.namespace}"
 
