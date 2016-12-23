@@ -59,7 +59,7 @@ def origin(body) {
         if ('Deploy DEV' in config.targetStages)
         stage('Deploy DEV') {
             sh "oc get pods -n ${config.namespace}"
-            sh "oc projects"
+//            sh "oc projects"
             /** **
             Maybe the ARTIFACT_URL could be rendered based on pom.xml
              nexus.h.svc.tite.lan/service/local/artifact/maven/redirect?r=snapshots\&g=${group()}\&a=${artifact()}\&v=${version()}"
@@ -69,7 +69,7 @@ def origin(body) {
             def f2 = new File('openshift')
             println "TITE: pwd 2 " + f2.getAbsolutePath()
             println("TITE: gwd "+System.getProperty("user.dir"))
-            new File('.').eachFileRecurse { println it.name }
+            f2.eachFileRecurse { println it.name }
             println("TITE: trying to write ")
             f.write('')
             println("TITE: hello computer? ")
