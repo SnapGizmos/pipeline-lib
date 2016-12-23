@@ -65,9 +65,10 @@ def origin(body) {
              nexus.h.svc.tite.lan/service/local/artifact/maven/redirect?r=snapshots\&g=${group()}\&a=${artifact()}\&v=${version()}"
              /** **/
             println "config environments are: " + config.environment
-            config.environment.each { key, value ->
-                println "going over ${key}=${value} "
-                sh "echo ${key}=${value} >> $WORKSPACE/openshift/env"
+            config.environment.each { k, v ->
+                println "going over ${k}=${v} "
+//                sh "echo ${k}=${v} >> $WORKSPACE/openshift/env"
+                sh "echo ${k}=${v} "
             }
             sh "bin/render-template.sh ${config.namespace}"
 
