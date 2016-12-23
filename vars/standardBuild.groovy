@@ -66,7 +66,7 @@ def origin(body) {
              /** **/
             // def params=''
             def f = new File('openshift/env')
-            def f2 = new File('.')
+            def f2 = new File('openshift')
             println "TITE: pwd 2 " + f2.getAbsolutePath()
             println("TITE: gwd "+System.getProperty("user.dir"))
             new File('.').eachFileRecurse { println it.name }
