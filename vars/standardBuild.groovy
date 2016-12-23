@@ -60,8 +60,10 @@ def origin(body) {
         stage('Deploy DEV') {
             sh "oc get pods -n ${config.namespace}"
             sh "oc projects"
-            #Maybe the ARTIFACT_URL could be rendered based on pom.xml
-            # nexus.h.svc.tite.lan/service/local/artifact/maven/redirect?r=snapshots\&g=${group()}\&a=${artifact()}\&v=${version()}"
+            /** **
+            Maybe the ARTIFACT_URL could be rendered based on pom.xml
+             nexus.h.svc.tite.lan/service/local/artifact/maven/redirect?r=snapshots\&g=${group()}\&a=${artifact()}\&v=${version()}"
+             /** **/
             config.environment.each { key, value ->
                 sh "export ${key}=${value}"
             }
