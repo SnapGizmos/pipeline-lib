@@ -30,8 +30,6 @@ def origin(body) {
 
     if ('Build' in config.targetStages) nodetype = 'maven'
     node(nodetype) {
-        config.environment.each { k, v -> println "first: going over ${k}=${v} " }
-
         if (config.showEnv) {
             sh "env"
         }
@@ -70,12 +68,11 @@ def origin(body) {
              nexus.h.svc.tite.lan/service/local/artifact/maven/redirect?r=snapshots\&g=${group()}\&a=${artifact()}\&v=${version()}"
              /** **/
             println "config environments are: " + config.environment.size()
-            def params=''
+//            def params=''
             for (itm in config.environment) {
                 println "going over ${itm.key}=${itm.value} for "+System.getenv('WORKSPACE')
-//                sh "echo ${k}=${v} >> $WORKSPACE/openshift/env"
-                params="${params} ${itm.key}=${itm.value}"
-//                sh "echo TITE: ${k}=${v} "
+                sh "echo ${itm.key}=${itm.value} >> $WORKSPACE/openshift/env"
+//                params="${params} ${itm.key}=${itm.value}"
             }
             sh "echo params ${params} "
             sh "bin/render-template.sh ${config.namespace}"
