@@ -64,10 +64,13 @@ def origin(body) {
             Maybe the ARTIFACT_URL could be rendered based on pom.xml
              nexus.h.svc.tite.lan/service/local/artifact/maven/redirect?r=snapshots\&g=${group()}\&a=${artifact()}\&v=${version()}"
              /** **/
+            def params=''
             config.environment.each { key, value ->
-                sh "export ${key}=${value}"
+                params="${params} ${key}=${value}"
             }
-            sh "bin/render-template.sh ${config.namespace}"
+            sh "bin/render-template.sh ${config.namespace} ${params}"
+
+            /** old crap **
             sh "rm -rf oc-build && mkdir -p oc-build/deployments"
             sh "cp target/openshift-tasks.war oc-build/deployments/ROOT.war"
             // clean up. keep the image stream
@@ -79,6 +82,7 @@ def origin(body) {
             // deploy image
             sh "${ocCmd} new-app tasks:latest -n dev"
             sh "${ocCmd} expose svc/tasks -n dev"
+             /** **/
         }
 
         stage('Deploy STAGE') {
