@@ -66,7 +66,7 @@ def origin(body) {
              /** **/
             println "config environments are: " + config.environment
             config.environment.each { k, v ->
-                println "going over ${k}=${v} "
+                println "going over ${k}=${v} for "+System.getenv('WORKSPACE')
 //                sh "echo ${k}=${v} >> $WORKSPACE/openshift/env"
                 sh "echo TITE: ${k}=${v} "
             }
