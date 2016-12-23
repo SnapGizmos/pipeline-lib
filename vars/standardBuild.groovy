@@ -64,11 +64,12 @@ def origin(body) {
             Maybe the ARTIFACT_URL could be rendered based on pom.xml
              nexus.h.svc.tite.lan/service/local/artifact/maven/redirect?r=snapshots\&g=${group()}\&a=${artifact()}\&v=${version()}"
              /** **/
-            def params=''
+            // def params=''
             config.environment.each { key, value ->
-                params="${params} ${key}=${value}"
+                // params="${params} ${key}=${value}"
+                sh="export ${key}=${value}"
             }
-            sh "bin/render-template.sh ${config.namespace} ${params}"
+            sh "bin/render-template.sh ${config.namespace}"
 
             /** old crap **
             sh "rm -rf oc-build && mkdir -p oc-build/deployments"
