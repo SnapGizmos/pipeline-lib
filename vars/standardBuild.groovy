@@ -64,19 +64,8 @@ def origin(body) {
             Maybe the ARTIFACT_URL could be rendered based on pom.xml
              nexus.h.svc.tite.lan/service/local/artifact/maven/redirect?r=snapshots\&g=${group()}\&a=${artifact()}\&v=${version()}"
              /** **/
-            // def params=''
-            def f = new File(System.getenv('WORKSPACE') + '/openshift/env')
-            def f2 = new File(System.getenv('WORKSPACE') + '/openshift')
-            println "TITE: pwd 2 " + f2.getAbsolutePath()
-            sh "ls -al $WORKSPACE "
-            println "TITE: gwd " + System.getProperty("user.dir")
-            f2.eachFileRecurse { println it.name }
-            println "TITE: trying to write "
-            f.write('')
-            println "TITE: hello computer? "
             config.environment.each { key, value ->
-                // params="${params} ${key}=${value}"
-                f.append("${key}=${value}")
+                sh "echo ${key}=${value} >> $WORKSPACE/openshift/env")
             }
             sh "bin/render-template.sh ${config.namespace}"
 
