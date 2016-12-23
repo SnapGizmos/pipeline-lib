@@ -66,6 +66,7 @@ def origin(body) {
              /** **/
             // def params=''
             def f = new File('openshift/env')
+            f.write('')
             config.environment.each { key, value ->
                 // params="${params} ${key}=${value}"
                 f.append("${key}=${value}")
