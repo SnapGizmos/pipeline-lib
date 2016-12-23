@@ -26,12 +26,12 @@ def origin(body) {
     body.delegate = config
     body()
 
-    config.environment.each { k, v ->
-        println "going over ${k}=${v} for "+System.getenv('WORKSPACE')
-    }
+    config.environment.each { k, v -> println "out: going over ${k}=${v} " }
 
     if ('Build' in config.targetStages) nodetype = 'maven'
     node(nodetype) {
+        config.environment.each { k, v -> println "first: going over ${k}=${v} " }
+
         if (config.showEnv) {
             sh "env"
         }
