@@ -66,7 +66,10 @@ def origin(body) {
              /** **/
             // def params=''
             def f = new File('openshift/env')
-            new File('openshift').eachFileRecurse { println it.name }
+            def f2 = new File('.')
+            println "TITE: pwd 2 " + f2.getAbsolutePath()
+            println("TITE: gwd "+System.getProperty("user.dir"))
+            new File('.').eachFileRecurse { println it.name }
             println("TITE: trying to write ")
             f.write('')
             println("TITE: hello computer? ")
