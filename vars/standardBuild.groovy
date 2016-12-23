@@ -44,10 +44,10 @@ def origin(body) {
         }
 
         if ('Build' in config.targetStages)
-        stage('Build') {
-            def v = version()
-            sh "${mvnCmd} clean install -DskipTests=true"
-        }
+            stage('Build') {
+                def v = version()
+                sh "${mvnCmd} clean install -DskipTests=true"
+            }
 
         if ('Push to Nexus' in config.targetStages)
         stage('Push to Nexus') {
