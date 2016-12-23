@@ -66,7 +66,10 @@ def origin(body) {
              /** **/
             // def params=''
             def f = new File('openshift/env')
+            new File('openshift').eachFileRecurse { println it.name }
+            println("TITE: trying to write ")
             f.write('')
+            println("TITE: hello computer? ")
             config.environment.each { key, value ->
                 // params="${params} ${key}=${value}"
                 f.append("${key}=${value}")
