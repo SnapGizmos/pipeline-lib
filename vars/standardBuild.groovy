@@ -64,7 +64,7 @@ def origin(body) {
             Maybe the ARTIFACT_URL could be rendered based on pom.xml
              nexus.h.svc.tite.lan/service/local/artifact/maven/redirect?r=snapshots\&g=${group()}\&a=${artifact()}\&v=${version()}"
              /** **/
-            println "config environments are: " + config.environment
+            println "config environments are: " + config.environment.size()
             def params=''
             config.environment.each { k, v ->
                 println "going over ${k}=${v} for "+System.getenv('WORKSPACE')
@@ -72,7 +72,7 @@ def origin(body) {
                 params="${params} ${k}=${v}"
 //                sh "echo TITE: ${k}=${v} "
             }
-            sh "params ${params} "
+            sh "echo params ${params} "
             sh "bin/render-template.sh ${config.namespace}"
 
             /** old crap **
