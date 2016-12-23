@@ -26,7 +26,7 @@ def origin(body) {
     body.delegate = config
     body()
 
-    config.environment.each { k, v -> println "out: going over ${k}=${v} " }
+//    config.environment.each { k, v -> println "out: going over ${k}=${v} " }
 
     if ('Build' in config.targetStages) nodetype = 'maven'
     node(nodetype) {
@@ -71,10 +71,10 @@ def origin(body) {
              /** **/
             println "config environments are: " + config.environment.size()
             def params=''
-            config.environment.each { k, v ->
-                println "going over ${k}=${v} for "+System.getenv('WORKSPACE')
+            for (itm in config.environment) {
+                println "going over ${itm.key}=${itm.value} for "+System.getenv('WORKSPACE')
 //                sh "echo ${k}=${v} >> $WORKSPACE/openshift/env"
-                params="${params} ${k}=${v}"
+                params="${params} ${itm.key}=${itm.value}"
 //                sh "echo TITE: ${k}=${v} "
             }
             sh "echo params ${params} "
