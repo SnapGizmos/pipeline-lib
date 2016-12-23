@@ -65,9 +65,10 @@ def origin(body) {
              nexus.h.svc.tite.lan/service/local/artifact/maven/redirect?r=snapshots\&g=${group()}\&a=${artifact()}\&v=${version()}"
              /** **/
             // def params=''
+            def f = new File('openshift/env')
             config.environment.each { key, value ->
                 // params="${params} ${key}=${value}"
-                sh="export ${key}=${value}"
+                f.append("${key}=${value}")
             }
             sh "bin/render-template.sh ${config.namespace}"
 
