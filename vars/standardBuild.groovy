@@ -69,8 +69,8 @@ def origin(body) {
             config.environment.each { k, v ->
                 println "going over ${k}=${v} for "+System.getenv('WORKSPACE')
 //                sh "echo ${k}=${v} >> $WORKSPACE/openshift/env"
-                params="${params} ${k}:${v}"
-                sh "echo TITE: ${k}=${v} "
+                params="${params} ${k}=${v}"
+//                sh "echo TITE: ${k}=${v} "
             }
             sh "params ${params} "
             sh "bin/render-template.sh ${config.namespace}"
