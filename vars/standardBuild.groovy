@@ -25,6 +25,11 @@ def origin(body) {
     body.resolveStrategy = Closure.DELEGATE_FIRST
     body.delegate = config
     body()
+
+    config.environment.each { k, v ->
+        println "going over ${k}=${v} for "+System.getenv('WORKSPACE')
+    }
+
     if ('Build' in config.targetStages) nodetype = 'maven'
     node(nodetype) {
         if (config.showEnv) {
