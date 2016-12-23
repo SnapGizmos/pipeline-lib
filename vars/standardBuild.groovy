@@ -68,11 +68,12 @@ def origin(body) {
             def f = new File(System.getenv('WORKSPACE') + '/openshift/env')
             def f2 = new File(System.getenv('WORKSPACE') + '/openshift')
             println "TITE: pwd 2 " + f2.getAbsolutePath()
-            println("TITE: gwd "+System.getProperty("user.dir"))
+            sh "ls -al $WORKSPACE "
+            println "TITE: gwd " + System.getProperty("user.dir")
             f2.eachFileRecurse { println it.name }
-            println("TITE: trying to write ")
+            println "TITE: trying to write "
             f.write('')
-            println("TITE: hello computer? ")
+            println "TITE: hello computer? "
             config.environment.each { key, value ->
                 // params="${params} ${key}=${value}"
                 f.append("${key}=${value}")
