@@ -66,6 +66,7 @@ def origin(body) {
              /** **/
             println "config environments are: " + config.environment
             config.environment.each { key, value ->
+                println "going over ${key}=${value} "
                 sh "echo ${key}=${value} >> $WORKSPACE/openshift/env"
             }
             sh "bin/render-template.sh ${config.namespace}"
