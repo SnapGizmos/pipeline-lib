@@ -59,7 +59,7 @@ def origin(body) {
         if ('Deploy DEV' in config.targetStages)
         stage('Deploy DEV') {
             sh "oc get pods -n ${config.namespace}"
-//            sh "oc projects"
+            sh "env"
             /** **
             Maybe the ARTIFACT_URL could be rendered based on pom.xml
              nexus.h.svc.tite.lan/service/local/artifact/maven/redirect?r=snapshots\&g=${group()}\&a=${artifact()}\&v=${version()}"
