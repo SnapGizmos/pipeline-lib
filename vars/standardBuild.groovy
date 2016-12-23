@@ -65,12 +65,14 @@ def origin(body) {
              nexus.h.svc.tite.lan/service/local/artifact/maven/redirect?r=snapshots\&g=${group()}\&a=${artifact()}\&v=${version()}"
              /** **/
             println "config environments are: " + config.environment
+            def params=''
             config.environment.each { k, v ->
                 println "going over ${k}=${v} for "+System.getenv('WORKSPACE')
 //                sh "echo ${k}=${v} >> $WORKSPACE/openshift/env"
+                params="${params} ${k}:${v}"
                 sh "echo TITE: ${k}=${v} "
             }
-            sh "cat $WORKSPACE/openshift/env "
+            sh "params ${params} "
             sh "bin/render-template.sh ${config.namespace}"
 
             /** old crap **
