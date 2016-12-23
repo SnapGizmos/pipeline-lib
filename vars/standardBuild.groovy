@@ -64,6 +64,7 @@ def origin(body) {
             Maybe the ARTIFACT_URL could be rendered based on pom.xml
              nexus.h.svc.tite.lan/service/local/artifact/maven/redirect?r=snapshots\&g=${group()}\&a=${artifact()}\&v=${version()}"
              /** **/
+            println "config environments are: " + config.environment
             config.environment.each { key, value ->
                 sh "echo ${key}=${value} >> $WORKSPACE/openshift/env"
             }
