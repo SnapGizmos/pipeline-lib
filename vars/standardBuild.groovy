@@ -27,6 +27,9 @@ def origin(body) {
     body()
 
 //    config.environment.each { k, v -> println "out: going over ${k}=${v} " }
+    if (!config.targetStages) {
+        config.targetStages = ['Build','Test and Analysis','Push to Nexus','Deploy DEV','Deploy STAGE']
+    }
 
     if ('Build' in config.targetStages) nodetype = 'maven'
     node(nodetype) {
