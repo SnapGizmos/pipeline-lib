@@ -123,7 +123,7 @@ def origin(body) {
 //            sh "bin/render-template.sh ${config.namespace}"
             def strFile = readFile file: "openshift/templates/${config.tmplOpenshift}"
             println "files has: ${strFile.length()}"
-            renderTemplate(this, strFile)
+            osUtils.renderTemplate(this, strFile)
             println "DONE"
 
             /** old crap **
