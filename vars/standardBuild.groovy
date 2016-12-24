@@ -3,10 +3,13 @@
 @Grab('org.yaml:snakeyaml:1.17')
 import org.yaml.snakeyaml.Yaml
 
+import java.nio.charset.StandardCharsets
+
 def static renderTemplate(String fname) {
     def baseDir = '.'
-    def is = streamFileFromWorkspace('openshift/templates/${fname}')
+    def strFile = readFile file: "openshift/templates/${fname}"
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
+    def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
     println "TITE1 "
     //def image = streamFileFromWorkspace('images/logo.png')
 
