@@ -7,12 +7,11 @@ import org.yaml.snakeyaml.Yaml
 
 import java.nio.charset.StandardCharsets
 
-//def static renderTemplate(java.io.InputStream is) {
-def static renderTemplate(String fname) {
-    node {
-        def baseDir = '.'
-    def strFile = readFile file: "openshift/templates/${fname}"
-    def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
+def static renderTemplate(java.io.InputStream is) {
+//def static renderTemplate(String fname) {
+//    def baseDir = '.'
+//    def strFile = readFile file: "openshift/templates/${fname}"
+//    def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
     println "TITE1 "
     //def image = streamFileFromWorkspace('images/logo.png')
@@ -27,9 +26,7 @@ def static renderTemplate(String fname) {
         proc.waitForProcessOutput(outputStream,System.err)
         println outputStream.toString()
     }
-
-    is.close()
-    }
+//    is.close()
 }
 
 def call(body) {
@@ -116,10 +113,10 @@ def origin(body) {
             writeFile file:'openshift/env', text: params
             sh "cat $WORKSPACE/openshift/env "
 
-            renderTemplate(config.tmplOpenshift)
+//            renderTemplate(config.tmplOpenshift)
 //            sh "bin/render-template.sh ${config.namespace}"
-//            def strFile = readFile file: "openshift/templates/${config.tmplOpenshift}"
-//            renderTemplate(new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8)))
+            def strFile = readFile file: "openshift/templates/${config.tmplOpenshift}"
+            renderTemplate(new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8)))
 
             /** old crap **
             sh "rm -rf oc-build && mkdir -p oc-build/deployments"
