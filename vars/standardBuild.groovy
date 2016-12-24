@@ -7,11 +7,13 @@ import org.yaml.snakeyaml.Yaml
 
 import java.nio.charset.StandardCharsets
 
+class osUtils extends Serializable {
 def static renderTemplate(Script script, String strFile) {
 //def static renderTemplate(String fname) {
 //    def baseDir = '.'
 //    def strFile = readFile file: "openshift/templates/${fname}"
-    script.node {
+    println "Config is actually ${script.config}"
+    script.node(script.config.nodetype) {
 //    def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
     println "TITE1 "
@@ -30,6 +32,7 @@ def static renderTemplate(Script script, String strFile) {
 //    }
     is.close()
     }
+}
 }
 
 def call(body) {
@@ -65,8 +68,8 @@ def origin(body) {
         config.targetStages = ['Build','Test and Analysis','Push to Nexus','Deploy DEV','Deploy STAGE']
     }
 
-    if (true || 'Build' in config.targetStages) nodetype = 'maven'
-    node(nodetype) {
+    if (true || 'Build' in config.targetStages) config.nodetype = 'maven'
+    node(config.nodetype) {
         if (config.showEnv) {
             sh "env"
         }
@@ -120,7 +123,7 @@ def origin(body) {
 //            sh "bin/render-template.sh ${config.namespace}"
             def strFile = readFile file: "openshift/templates/${config.tmplOpenshift}"
             println "files has: ${strFile.length()}"
-            renderTemplate(this, strFile)
+            osUtils.renderTemplate(this, strFile)
             println "DONE"
 
             /** old crap **
