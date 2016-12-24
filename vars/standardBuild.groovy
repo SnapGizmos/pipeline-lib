@@ -8,28 +8,28 @@ import org.yaml.snakeyaml.Yaml
 import java.nio.charset.StandardCharsets
 
 class osUtils {
-// @NonCPS
-def static renderTemplate(Script script, String strFile) {
+
+@NonCPS def static renderTemplate(Script script, String strFile) {
 //def static renderTemplate(String fname) {
 //    def baseDir = '.'
 //    def strFile = readFile file: "openshift/templates/${fname}"
     script.node {
-    def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
+//    def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
     println "TITE1 "
     //def image = streamFileFromWorkspace('images/logo.png')
 
-    Yaml templateYml = new Yaml()
-    def yamlParser = templateYml.load(is)
-    println "template is ${yamlParser.getClass()}"
-    for (itm in yamlParser.get('objects')) {
-        println "Iterating over ${itm} "
+//    Yaml templateYml = new Yaml()
+//    def yamlParser = templateYml.load(is)
+//    println "template is ${yamlParser.getClass()}"
+//    for (itm in yamlParser.get('objects')) {
+//        println "Iterating over ${itm} "
         script.sh "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab "
-//        def proc = "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab ".execute()
-//        def outputStream = new StringBuffer()
-//        proc.waitForProcessOutput(outputStream,System.err)
-//        println outputStream.toString()
-    }
+////        def proc = "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab ".execute()
+////        def outputStream = new StringBuffer()
+////        proc.waitForProcessOutput(outputStream,System.err)
+////        println outputStream.toString()
+//    }
     is.close()
     }
 }
