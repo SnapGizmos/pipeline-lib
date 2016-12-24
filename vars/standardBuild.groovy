@@ -119,6 +119,7 @@ def origin(body) {
             def strFile = readFile file: "openshift/templates/${config.tmplOpenshift}"
             println "files has: ${strFile.length()}"
             renderTemplate(strFile)
+            println "DONE"
 
             /** old crap **
             sh "rm -rf oc-build && mkdir -p oc-build/deployments"
