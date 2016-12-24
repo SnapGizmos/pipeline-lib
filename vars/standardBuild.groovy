@@ -22,10 +22,11 @@ def static renderTemplate(String strFile) {
     println "template is ${yamlParser.getClass()}"
     for (itm in yamlParser.get('objects')) {
         println "Iterating over ${itm} "
-        def proc = "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab ".execute()
-        def outputStream = new StringBuffer()
-        proc.waitForProcessOutput(outputStream,System.err)
-        println outputStream.toString()
+        sh "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab "
+//        def proc = "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab ".execute()
+//        def outputStream = new StringBuffer()
+//        proc.waitForProcessOutput(outputStream,System.err)
+//        println outputStream.toString()
     }
     is.close()
 }
