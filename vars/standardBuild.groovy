@@ -7,9 +7,7 @@ import org.yaml.snakeyaml.Yaml
 
 import java.nio.charset.StandardCharsets
 
-class osUtils {
-
-@NonCPS def static renderTemplate(Script script, String strFile) {
+def static renderTemplate(Script script, String strFile) {
 //def static renderTemplate(String fname) {
 //    def baseDir = '.'
 //    def strFile = readFile file: "openshift/templates/${fname}"
@@ -24,7 +22,7 @@ class osUtils {
 //    println "template is ${yamlParser.getClass()}"
 //    for (itm in yamlParser.get('objects')) {
 //        println "Iterating over ${itm} "
-        script.sh "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab "
+//        script.sh "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab "
 ////        def proc = "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab ".execute()
 ////        def outputStream = new StringBuffer()
 ////        proc.waitForProcessOutput(outputStream,System.err)
@@ -32,7 +30,6 @@ class osUtils {
 //    }
     is.close()
     }
-}
 }
 
 def call(body) {
@@ -123,7 +120,7 @@ def origin(body) {
 //            sh "bin/render-template.sh ${config.namespace}"
             def strFile = readFile file: "openshift/templates/${config.tmplOpenshift}"
             println "files has: ${strFile.length()}"
-            osUtils.renderTemplate(this, strFile)
+            renderTemplate(this, strFile)
             println "DONE"
 
             /** old crap **
