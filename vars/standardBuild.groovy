@@ -7,11 +7,13 @@ import org.yaml.snakeyaml.Yaml
 
 import java.nio.charset.StandardCharsets
 
-@NonCPS def static renderTemplate(String strFile) {
+class osUtils {
+// @NonCPS
+def static renderTemplate(Script script, String strFile) {
 //def static renderTemplate(String fname) {
 //    def baseDir = '.'
 //    def strFile = readFile file: "openshift/templates/${fname}"
-    node {
+    script.node {
     def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
     println "TITE1 "
@@ -22,7 +24,7 @@ import java.nio.charset.StandardCharsets
     println "template is ${yamlParser.getClass()}"
     for (itm in yamlParser.get('objects')) {
         println "Iterating over ${itm} "
-        sh "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab "
+        script.sh "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab "
 //        def proc = "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab ".execute()
 //        def outputStream = new StringBuffer()
 //        proc.waitForProcessOutput(outputStream,System.err)
@@ -30,6 +32,7 @@ import java.nio.charset.StandardCharsets
     }
     is.close()
     }
+}
 }
 
 def call(body) {
@@ -120,7 +123,7 @@ def origin(body) {
 //            sh "bin/render-template.sh ${config.namespace}"
             def strFile = readFile file: "openshift/templates/${config.tmplOpenshift}"
             println "files has: ${strFile.length()}"
-            renderTemplate(strFile)
+            renderTemplate(this, strFile)
             println "DONE"
 
             /** old crap **
