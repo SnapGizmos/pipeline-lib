@@ -9,8 +9,9 @@ import java.nio.charset.StandardCharsets
 
 //def static renderTemplate(java.io.InputStream is) {
 def static renderTemplate(String fname) {
-    def baseDir = '.'
-    def strFile = step($class: 'readFile', file: "openshift/templates/${fname}")
+    node {
+        def baseDir = '.'
+    def strFile = readFile file: "openshift/templates/${fname}")
     def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
     println "TITE1 "
@@ -28,6 +29,7 @@ def static renderTemplate(String fname) {
     }
 
     is.close()
+    }
 }
 
 def call(body) {
