@@ -7,31 +7,28 @@ import org.yaml.snakeyaml.Yaml
 
 import java.nio.charset.StandardCharsets
 
-def static renderTemplate(Script script) {
+def static renderTemplate(Script script, String fname) {
 //def static renderTemplate(String fname) {
 //    def baseDir = '.'
-//    def strFile = readFile file: "openshift/templates/${fname}"
     println "Config is actually ${script.config}"
     script.sh "echo Config is actually ${script.config}"
-//    script.node(script.config.nodetype) {
-//    def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
+    def strFile = script.readFile file: "openshift/templates/${fname}"
+    def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
     println "TITE1 "
-    //def image = streamFileFromWorkspace('images/logo.png')
 
-//    Yaml templateYml = new Yaml()
-//    def yamlParser = templateYml.load(is)
-//    println "template is ${yamlParser.getClass()}"
-//    for (itm in yamlParser.get('objects')) {
-//        println "Iterating over ${itm} "
+    Yaml templateYml = new Yaml()
+    def yamlParser = templateYml.load(is)
+    println "template is ${yamlParser.getClass()}"
+    for (itm in yamlParser.get('objects')) {
+        println "Iterating over ${itm} "
         script.sh "echo oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab "
-////        def proc = "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab ".execute()
-////        def outputStream = new StringBuffer()
-////        proc.waitForProcessOutput(outputStream,System.err)
-////        println outputStream.toString()
-//    }
-//    is.close()
-//    }
+//        def proc = "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab ".execute()
+//        def outputStream = new StringBuffer()
+//        proc.waitForProcessOutput(outputStream,System.err)
+//        println outputStream.toString()
+    }
+    is.close()
 }
 
 def call(body) {
@@ -122,7 +119,7 @@ def origin(body) {
 //            sh "bin/render-template.sh ${config.namespace}"
             def strFile = readFile file: "openshift/templates/${config.tmplOpenshift}"
             println "files has: ${strFile.length()}"
-            renderTemplate(this)
+            renderTemplate(this,config.tmplOpenshift)
             println "DONE"
 
             /** old crap **
