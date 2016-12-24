@@ -7,14 +7,26 @@ import org.yaml.snakeyaml.Yaml
 
 import java.nio.charset.StandardCharsets
 
-def static renderTemplate(Script script, config) {
+class osUtils {
+    private Script script;
+    private Map<> config;
+
+    def osUtils(Script script, def config) {
+        this.script = script
+        this.config = config
+    }
+}
+
+def static renderTemplate(Script script,def config) {
 //def static renderTemplate(String fname) {
 //    def baseDir = '.'
     println "Config is actually ${config}"
     script.sh "echo Config is actually ${config}"
     def strFile = script.readFile file: "openshift/templates/${config.tmplOpenshift}"
+    script.sh "echo ${strFile} "
     def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
+    script.sh "echo TITE1 "
     println "TITE1 "
 
     Yaml templateYml = new Yaml()
