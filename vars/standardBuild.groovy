@@ -116,6 +116,7 @@ def origin(body) {
 //            renderTemplate(config.tmplOpenshift)
 //            sh "bin/render-template.sh ${config.namespace}"
             def strFile = readFile file: "openshift/templates/${config.tmplOpenshift}"
+            println "files has: ${strFile}"
             renderTemplate(new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8)))
 
             /** old crap **
