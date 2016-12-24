@@ -1,6 +1,8 @@
 #!groovy
 
 @Grab('org.yaml:snakeyaml:1.17')
+@Grab('org.jenkinsci.plugins:snakeyaml:1.17')
+
 import org.yaml.snakeyaml.Yaml
 
 import java.nio.charset.StandardCharsets
@@ -8,7 +10,7 @@ import java.nio.charset.StandardCharsets
 //def static renderTemplate(java.io.InputStream is) {
 def static renderTemplate(String fname) {
     def baseDir = '.'
-    def strFile = readFile file: "openshift/templates/${fname}"
+    def strFile = step($class: 'readFile', file: "openshift/templates/${fname}")
     def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
     println "TITE1 "
@@ -52,9 +54,9 @@ def origin(body) {
     def config = [:]
     def nodetype
 
-//    body.resolveStrategy = Closure.DELEGATE_FIRST
-//    body.delegate = config
-//    body()
+    body.resolveStrategy = Closure.DELEGATE_FIRST
+    body.delegate = config
+    body()
 
 //    config.environment.each { k, v -> println "out: going over ${k}=${v} " }
     if (!config.targetStages) {
