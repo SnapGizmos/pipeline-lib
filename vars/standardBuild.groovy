@@ -12,6 +12,7 @@ def static renderTemplate(Script script) {
 //    def baseDir = '.'
 //    def strFile = readFile file: "openshift/templates/${fname}"
     println "Config is actually ${script.config}"
+    script.sh "echo Config is actually ${script.config}"
 //    script.node(script.config.nodetype) {
 //    def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
