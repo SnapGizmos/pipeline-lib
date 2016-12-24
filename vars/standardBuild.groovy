@@ -1,3 +1,29 @@
+#!groovy
+
+@Grab('org.yaml:snakeyaml:1.17')
+import org.yaml.snakeyaml.Yaml
+
+def static renderTemplate(String fname) {
+    def baseDir = '.'
+    def is = streamFileFromWorkspace('openshift/templates/${fname}')
+//    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
+    println "TITE1 "
+    //def image = streamFileFromWorkspace('images/logo.png')
+
+    Yaml templateYml = new Yaml()
+    def yamlParser = templateYml.load(is)
+    println "template is ${yamlParser.getClass()}"
+    for (itm in yamlParser.get('objects')) {
+        println "Iterating over ${itm} "
+        def proc = "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab ".execute()
+        def outputStream = new StringBuffer()
+        proc.waitForProcessOutput(outputStream,System.err)
+        println outputStream.toString()
+    }
+
+    is.close()
+}
+
 def call(body) {
     def config = [:]
     body.resolveStrategy = Closure.DELEGATE_FIRST
@@ -82,7 +108,8 @@ def origin(body) {
             writeFile file:'openshift/env', text: params
             sh "cat $WORKSPACE/openshift/env "
 
-            sh "bin/render-template.sh ${config.namespace}"
+//            sh "bin/render-template.sh ${config.namespace}"
+            renderTemplate(config.tmplOpenshift)
 
             /** old crap **
             sh "rm -rf oc-build && mkdir -p oc-build/deployments"
