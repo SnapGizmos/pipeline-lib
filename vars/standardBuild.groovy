@@ -7,12 +7,12 @@ import org.yaml.snakeyaml.Yaml
 
 import java.nio.charset.StandardCharsets
 
-def static renderTemplate(Script script, String fname) {
+def static renderTemplate(Script script, config) {
 //def static renderTemplate(String fname) {
 //    def baseDir = '.'
-    println "Config is actually ${script.config}"
-    script.sh "echo Config is actually ${script.config}"
-    def strFile = script.readFile file: "openshift/templates/${fname}"
+    println "Config is actually ${config}"
+    script.sh "echo Config is actually ${config}"
+    def strFile = script.readFile file: "openshift/templates/${config.tmplOpenshift}"
     def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
     println "TITE1 "
@@ -119,7 +119,7 @@ def origin(body) {
 //            sh "bin/render-template.sh ${config.namespace}"
             def strFile = readFile file: "openshift/templates/${config.tmplOpenshift}"
             println "files has: ${strFile.length()}"
-            renderTemplate(this,config.tmplOpenshift)
+            renderTemplate(this,config)
             println "DONE"
 
             /** old crap **
