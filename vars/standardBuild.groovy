@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets
 def static renderTemplate(String fname) {
     node {
         def baseDir = '.'
-    def strFile = readFile file: "openshift/templates/${fname}")
+    def strFile = readFile file: "openshift/templates/${fname}"
     def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
     println "TITE1 "
