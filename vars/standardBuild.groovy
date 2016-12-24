@@ -7,11 +7,11 @@ import org.yaml.snakeyaml.Yaml
 
 import java.nio.charset.StandardCharsets
 
-@NonCPS
-def static renderTemplate(String strFile) {
+@NonCPS def static renderTemplate(String strFile) {
 //def static renderTemplate(String fname) {
 //    def baseDir = '.'
 //    def strFile = readFile file: "openshift/templates/${fname}"
+    node {
     def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
     println "TITE1 "
@@ -29,6 +29,7 @@ def static renderTemplate(String strFile) {
 //        println outputStream.toString()
     }
     is.close()
+    }
 }
 
 def call(body) {
@@ -228,3 +229,4 @@ def origin_orig() {
     }
 }
 
+return this
