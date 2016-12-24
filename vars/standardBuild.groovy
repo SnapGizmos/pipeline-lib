@@ -62,7 +62,7 @@ def origin(body) {
         config.targetStages = ['Build','Test and Analysis','Push to Nexus','Deploy DEV','Deploy STAGE']
     }
 
-    if ('Build' in config.targetStages) nodetype = 'maven'
+    if (true || 'Build' in config.targetStages) nodetype = 'maven'
     node(nodetype) {
         if (config.showEnv) {
             sh "env"
