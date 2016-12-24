@@ -7,7 +7,7 @@ import org.yaml.snakeyaml.Yaml
 
 import java.nio.charset.StandardCharsets
 
-@NoCPS
+@NonCPS
 def static renderTemplate(java.io.InputStream is) {
 //def static renderTemplate(String fname) {
 //    def baseDir = '.'
