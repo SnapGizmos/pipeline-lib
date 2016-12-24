@@ -7,6 +7,7 @@ import org.yaml.snakeyaml.Yaml
 
 import java.nio.charset.StandardCharsets
 
+@NoCPS
 def static renderTemplate(java.io.InputStream is) {
 //def static renderTemplate(String fname) {
 //    def baseDir = '.'
@@ -116,7 +117,7 @@ def origin(body) {
 //            renderTemplate(config.tmplOpenshift)
 //            sh "bin/render-template.sh ${config.namespace}"
             def strFile = readFile file: "openshift/templates/${config.tmplOpenshift}"
-            println "files has: ${strFile}"
+            println "files has: ${strFile.length()}"
             renderTemplate(new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8)))
 
             /** old crap **
