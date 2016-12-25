@@ -24,7 +24,7 @@ class OpenshiftCLI implements Serializable {
     def renderTemplate() {
         script.echo "OpenshiftCLI.renderTemplate() Config is actually '${config}' "
         def strFile = script.readFile file: "openshift/templates/test.json"
-        def jsonArray = JSONObject( strFile )
+        def jsonArray = new JSONObject( strFile )
         script.echo jsonArray
     }
 
