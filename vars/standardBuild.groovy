@@ -13,14 +13,14 @@ def static renderTemplate(Script script,def config) {
     println "Config is actually ${config}"
     script.echo "Config is actually '${config}' "
     def strFile = script.readFile file: "openshift/templates/${config.tmplOpenshift}"
-//    script.sh "echo ${strFile} "
-    def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
+    script.echo strFile
+//    def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
     script.sh "echo TITE1 "
     println "TITE1 "
 
     Yaml templateYml = new Yaml()
-    def yamlParser = templateYml.load(is)
+    def yamlParser = templateYml.load(strFile)
     println "template is ${yamlParser.getClass()}"
     for (itm in yamlParser.get('objects')) {
         println "Iterating over ${itm} "
@@ -30,7 +30,7 @@ def static renderTemplate(Script script,def config) {
 //        proc.waitForProcessOutput(outputStream,System.err)
 //        println outputStream.toString()
     }
-    is.close()
+//    is.close()
 }
 
 def call(body) {
@@ -118,11 +118,12 @@ def origin(body) {
             sh "cat $WORKSPACE/openshift/env "
 
             try {
-                def oscli = new OpenshiftCLI('this','config');
+//                def oscli = new OpenshiftCLI('this','config');
+                def oscli = new OpenshiftCLI(this,config);
 //            def oscli = new OpenshiftCLI();
                 println "openshift cli is : ${oscli}"
             } catch (Exception e) {
-                println "got this: ${e.getStackTrace()}"
+                println e
             }
 //            renderTemplate(config.tmplOpenshift)
 //            sh "bin/render-template.sh ${config.namespace}"

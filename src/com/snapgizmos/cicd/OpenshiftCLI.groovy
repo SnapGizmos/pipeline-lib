@@ -8,18 +8,11 @@ class OpenshiftCLI implements Serializable {
     private Map config = null;
 //    private Map config = new HashMap();
 
-    def osUtils() {
-    }
-
-    def osUtils(String script, String config) {
-        println "TITE33: got this #{script} config #{config} "
-    }
-
-    def osUtils(script, config) {
-//        script.sh "echo TITE: OpenshiftCLI constructur!!"
+    def OpenshiftCLI(Script script, Map config) {
+        script.sh "echo TITE: OpenshiftCLI constructur!!"
         this.script = script
         this.config = config
-//        script.echo "TITE: OpenshiftCLI constructur!! /end "
+        script.echo "TITE: OpenshiftCLI constructur!! /end "
     }
 
     public String toString() {
