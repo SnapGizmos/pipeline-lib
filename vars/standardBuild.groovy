@@ -117,10 +117,13 @@ def origin(body) {
             writeFile file:'openshift/env', text: params
             sh "cat $WORKSPACE/openshift/env "
 
-            def oscli = new OpenshiftCLI('this','config');
+            try {
+                def oscli = new OpenshiftCLI('this','config');
 //            def oscli = new OpenshiftCLI();
-            println "openshift cli is : ${oscli}"
-
+                println "openshift cli is : ${oscli}"
+            } catch (Exception e) {
+                println "got this: ${e.stackTrace()}"
+            }
 //            renderTemplate(config.tmplOpenshift)
 //            sh "bin/render-template.sh ${config.namespace}"
             def strFile = readFile file: "openshift/templates/${config.tmplOpenshift}"

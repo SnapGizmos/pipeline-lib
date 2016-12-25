@@ -11,6 +11,10 @@ class OpenshiftCLI implements Serializable {
     def osUtils() {
     }
 
+    def osUtils(String script, String config) {
+        println "TITE33: got this #{script} config #{config} "
+    }
+
     def osUtils(script, config) {
 //        script.sh "echo TITE: OpenshiftCLI constructur!!"
         this.script = script
