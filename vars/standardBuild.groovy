@@ -121,6 +121,7 @@ def origin(body) {
                 def oscli = new OpenshiftCLI(this,config);
 //            def oscli = new OpenshiftCLI();
                 println "openshift cli is : ${oscli}"
+                oscli.renderTemplate()
             } catch (Exception e) {
                 println e
             }

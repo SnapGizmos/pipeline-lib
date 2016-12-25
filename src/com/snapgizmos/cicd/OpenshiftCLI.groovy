@@ -18,4 +18,8 @@ class OpenshiftCLI implements Serializable {
         println "TITE: OpenshiftCLI constructur!! /end "
     }
 
+    def renderTemplate() {
+        script.echo "OpenshiftCLI.renderTemplate() Config is actually '${config}' "
+    }
+
 }
