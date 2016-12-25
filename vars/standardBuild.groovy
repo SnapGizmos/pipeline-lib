@@ -114,7 +114,8 @@ def origin(body) {
             }
             sh "echo params ${params} "
 
-            def oscli = new OpenshiftCLI('this','config');
+//            def oscli = new OpenshiftCLI('this','config');
+            def oscli = new OpenshiftCLI();
             println "openshift cli is : ${oscli}"
 
             writeFile file:'openshift/env', text: params
