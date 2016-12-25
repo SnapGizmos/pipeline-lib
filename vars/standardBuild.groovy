@@ -19,7 +19,12 @@ def static renderTemplate(Script script,def config) {
     script.sh "echo TITE1 "
     println "TITE1 "
 
-    script.openshiftCreateResource jsonyaml: strFile, namespace: 'dev', verbose: '5'
+    try {
+        script.openshiftCreateResource jsonyaml: strFile, namespace: 'dev', verbose: '5'
+    } catch (Exception e) {
+        script.echo "Silengly ignoring exception : "
+        script.echo e
+    }
     /** **
     Yaml templateYml = new Yaml()
     script.sh "echo TITE2 "
