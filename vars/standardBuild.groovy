@@ -135,7 +135,9 @@ def origin(body) {
             def strFile = readFile file: "openshift/templates/${config.tmplOpenshift}"
             println "files has: ${strFile.length()}"
             renderTemplate(this,config)
-            println "called local renderTemplate"
+            echo "called local renderTemplate. Testing the bad apple"
+            Yaml templateYml = new Yaml()
+            echo "YESSSSS "
 
 
             /** old crap **
