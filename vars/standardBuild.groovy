@@ -4,18 +4,8 @@
 //@Grab('org.jenkinsci.plugins:snakeyaml:1.17')
 
 import org.yaml.snakeyaml.Yaml
-
 import java.nio.charset.StandardCharsets
-
-class osUtils {
-    private Script script;
-    private Map<> config;
-
-    def osUtils(Script script, def config) {
-        this.script = script
-        this.config = config
-    }
-}
+import com.snapgizmos.cicd.OpenshiftCLI;
 
 def static renderTemplate(Script script,def config) {
 //def static renderTemplate(String fname) {
@@ -123,6 +113,9 @@ def origin(body) {
                 params="${params}${itm.key}=\'${itm.value}\'\n"
             }
             sh "echo params ${params} "
+
+            def oscli = new OpenshiftCLI(this,config);
+            println "openshift cli is : ${oscli}"
 
             writeFile file:'openshift/env', text: params
             sh "cat $WORKSPACE/openshift/env "
