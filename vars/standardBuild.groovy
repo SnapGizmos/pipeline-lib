@@ -7,6 +7,10 @@ import org.yaml.snakeyaml.Yaml
 import java.nio.charset.StandardCharsets
 import com.snapgizmos.cicd.OpenshiftCLI;
 
+def static paramTest(Script script,def parser) {
+    script.echo " class is ${parser.getClass()}"
+}
+
 def static renderTemplate(Script script,def config) {
 //def static renderTemplate(String fname) {
 //    def baseDir = '.'
@@ -20,7 +24,7 @@ def static renderTemplate(Script script,def config) {
     println "TITE1 "
 
     try {
-        script.openshiftCreateResource jsonyaml: strFile, namespace: 'dev', verbose: 'true'
+        script.openshiftCreateResource jsonyaml: strFile, namespace: 'dev', verbose: 'false'
     } catch (Exception e) {
         script.echo "Silengly ignoring exception : "
         script.echo e.toString()
@@ -141,7 +145,11 @@ def origin(body) {
             println "files has: ${strFile.length()}"
             renderTemplate(this,config)
             echo "called local renderTemplate. Testing the bad apple"
+            def strFile = script.readFile file: "openshift/templates/${config.tmplOpenshift}"
             Yaml templateYml = new Yaml()
+            def yamlParser = templateYml.load(strFile)
+            echo "template is ${yamlParser.getClass()}"
+            paramTest(this,yamlParser)
             echo "YESSSSS "
 
 
