@@ -122,7 +122,7 @@ def origin(body) {
 //            def oscli = new OpenshiftCLI();
                 println "openshift cli is : ${oscli}"
             } catch (Exception e) {
-                println "got this: ${e.stackTrace()}"
+                println "got this: ${e.getStackTrace()}"
             }
 //            renderTemplate(config.tmplOpenshift)
 //            sh "bin/render-template.sh ${config.namespace}"
