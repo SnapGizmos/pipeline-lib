@@ -12,10 +12,10 @@ class OpenshiftCLI implements Serializable {
 
 //    @NonCPS
     def OpenshiftCLI(Script script, Map config) {
-        script.sh "echo TITE: OpenshiftCLI constructur!!"
+        println "echo TITE: OpenshiftCLI constructur!!"
         this.script = script
         this.config = config
-        script.echo "TITE: OpenshiftCLI constructur!! /end "
+        println "TITE: OpenshiftCLI constructur!! /end "
     }
 
 }
