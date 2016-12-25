@@ -19,7 +19,7 @@ def static renderTemplate(Script script,def config) {
     script.sh "echo TITE1 "
     println "TITE1 "
 
-    script.openshiftCreateResource jsonyaml: strFile, namespace: 'dev'
+    script.openshiftCreateResource jsonyaml: strFile, namespace: 'dev', verbose: '5'
     /** **
     Yaml templateYml = new Yaml()
     script.sh "echo TITE2 "
