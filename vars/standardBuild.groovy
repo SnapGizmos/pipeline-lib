@@ -20,6 +20,7 @@ def static renderTemplate(Script script,def config) {
     println "TITE1 "
 
     Yaml templateYml = new Yaml()
+    script.sh "echo TITE2 "
     def yamlParser = templateYml.load(strFile)
     println "template is ${yamlParser.getClass()}"
     for (itm in yamlParser.get('objects')) {
