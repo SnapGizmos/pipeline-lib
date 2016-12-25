@@ -34,12 +34,13 @@ def static renderTemplate(Script script,def config) {
     try {
         Yaml templateYml = new Yaml()
         script.echo "TITE2 what a bitch! "
+        def yamlParser = templateYml.load(strFile)
+        script.echo "TITE3 holly moses! "
     } catch (Exception e) {
         script.echo "Silengly ignoring _expected_ exception .. "
-        script.echo e.getStackTrace().toString()
+        script.echo e.toString()
     }
     /** **
-    def yamlParser = templateYml.load(strFile)
     println "template is ${yamlParser.getClass()}"
     for (itm in yamlParser.get('objects')) {
         println "Iterating over ${itm} "
@@ -144,7 +145,7 @@ def origin(body) {
                 println "openshift cli is : ${oscli}"
                 oscli.renderTemplate()
             } catch (Exception e) {
-                println e.getStackTrace()
+                println e.toString()
             }
 //            renderTemplate(config.tmplOpenshift)
 //            sh "bin/render-template.sh ${config.namespace}"
@@ -179,7 +180,7 @@ def origin(body) {
         stage('Deploy STAGE') {
             input message: "Promote to STAGE?", ok: "Promote"
             // tag for stage
-            sh "${ocCmd} tag dev/tasks:latest stage/tasks:${v}"
+            sh "${ocCmd} tag dev/tasks:latest stage/tasks:${version}"
             // clean up. keep the imagestream
             sh "${ocCmd} delete bc,dc,svc,route -l app=tasks -n stage"
             // deploy stage image
