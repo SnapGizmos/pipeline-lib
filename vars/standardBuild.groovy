@@ -17,7 +17,7 @@ def static renderTemplate(Script script,def config) {
     println "Config is actually ${config}"
     script.echo "Config is actually '${config}' "
     def strFile = script.readFile file: "openshift/templates/${config.tmplOpenshift}"
-    script.echo strFile
+//    script.echo strFile
 //    def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
     script.sh "echo TITE1 "
@@ -27,7 +27,7 @@ def static renderTemplate(Script script,def config) {
         script.openshiftCreateResource jsonyaml: strFile, namespace: 'dev', verbose: 'false'
     } catch (Exception e) {
         script.echo "Silengly ignoring exception : "
-        script.echo e.getStackTrace()
+//        script.echo e.getStackTrace()
         script.echo e.toString()
     }
 
@@ -36,7 +36,7 @@ def static renderTemplate(Script script,def config) {
         script.echo "TITE2 what a bitch! "
     } catch (Exception e) {
         script.echo "Silengly ignoring _expected_ exception .. "
-        script.echo e.getStackTrace()
+        script.echo e.getStackTrace().toString()
     }
     /** **
     def yamlParser = templateYml.load(strFile)
@@ -144,7 +144,7 @@ def origin(body) {
                 println "openshift cli is : ${oscli}"
                 oscli.renderTemplate()
             } catch (Exception e) {
-                println e
+                println e.getStackTrace()
             }
 //            renderTemplate(config.tmplOpenshift)
 //            sh "bin/render-template.sh ${config.namespace}"
