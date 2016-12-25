@@ -27,11 +27,18 @@ def static renderTemplate(Script script,def config) {
         script.openshiftCreateResource jsonyaml: strFile, namespace: 'dev', verbose: 'false'
     } catch (Exception e) {
         script.echo "Silengly ignoring exception : "
+        script.echo e.getStackTrace()
         script.echo e.toString()
     }
+
+    try {
+        Yaml templateYml = new Yaml()
+        script.echo "TITE2 what a bitch! "
+    } catch (Exception e) {
+        script.echo "Silengly ignoring _expected_ exception .. "
+        script.echo e.getStackTrace()
+    }
     /** **
-    Yaml templateYml = new Yaml()
-    script.sh "echo TITE2 "
     def yamlParser = templateYml.load(strFile)
     println "template is ${yamlParser.getClass()}"
     for (itm in yamlParser.get('objects')) {
