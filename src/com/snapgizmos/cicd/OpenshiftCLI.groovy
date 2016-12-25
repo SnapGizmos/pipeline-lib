@@ -12,5 +12,6 @@ class OpenshiftCLI {
         script.sh "echo TITE: OpenshiftCLI constructur!!"
         this.script = script
         this.config = config
+        script.echo "TITE: OpenshiftCLI constructur!! /end "
     }
 }
