@@ -143,9 +143,10 @@ def origin(body) {
 //            sh "bin/render-template.sh ${config.namespace}"
             def strFile = readFile file: "openshift/templates/${config.tmplOpenshift}"
             println "files has: ${strFile.length()}"
+
             renderTemplate(this,config)
+
             echo "called local renderTemplate. Testing the bad apple"
-            def strFile = script.readFile file: "openshift/templates/${config.tmplOpenshift}"
             Yaml templateYml = new Yaml()
             def yamlParser = templateYml.load(strFile)
             echo "template is ${yamlParser.getClass()}"
