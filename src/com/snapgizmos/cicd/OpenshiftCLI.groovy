@@ -9,9 +9,9 @@ class OpenshiftCLI {
 //    private Map config = new HashMap();
 
     def osUtils(script, config) {
-        script.sh "echo TITE: OpenshiftCLI constructur!!"
+//        script.sh "echo TITE: OpenshiftCLI constructur!!"
         this.script = script
         this.config = config
-        script.echo "TITE: OpenshiftCLI constructur!! /end "
+//        script.echo "TITE: OpenshiftCLI constructur!! /end "
     }
 }
