@@ -19,6 +19,8 @@ def static renderTemplate(Script script,def config) {
     script.sh "echo TITE1 "
     println "TITE1 "
 
+    script.openshiftCreateResource jsonyaml: strFile, namespace: 'dev'
+    /** **
     Yaml templateYml = new Yaml()
     script.sh "echo TITE2 "
     def yamlParser = templateYml.load(strFile)
@@ -32,6 +34,7 @@ def static renderTemplate(Script script,def config) {
 //        println outputStream.toString()
     }
 //    is.close()
+     /** **/
 }
 
 def call(body) {
