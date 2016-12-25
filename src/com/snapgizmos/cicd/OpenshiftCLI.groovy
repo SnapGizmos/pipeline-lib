@@ -19,6 +19,11 @@ class OpenshiftCLI implements Serializable {
     }
 
     public String toString() {
+//        return "[Person: firstName=" + firstName +
+//            " lastName=" + lastName +
+//            " age=" + age +
+//            " spouse=" + spouse.getFirstName() +
+//            "]";
         return this.getClass().getName() + "@" + Integer.toHexString(this.hashCode());
     }
 }

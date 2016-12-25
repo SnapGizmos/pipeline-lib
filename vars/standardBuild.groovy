@@ -11,9 +11,9 @@ def static renderTemplate(Script script,def config) {
 //def static renderTemplate(String fname) {
 //    def baseDir = '.'
     println "Config is actually ${config}"
-    script.sh "echo Config is actually ${config}"
+    script.echo "Config is actually '${config}' "
     def strFile = script.readFile file: "openshift/templates/${config.tmplOpenshift}"
-    script.sh "echo ${strFile} "
+//    script.sh "echo ${strFile} "
     def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
     script.sh "echo TITE1 "
@@ -114,19 +114,20 @@ def origin(body) {
             }
             sh "echo params ${params} "
 
-//            def oscli = new OpenshiftCLI('this','config');
-            def oscli = new OpenshiftCLI();
-            println "openshift cli is : ${oscli}"
-
             writeFile file:'openshift/env', text: params
             sh "cat $WORKSPACE/openshift/env "
+
+            def oscli = new OpenshiftCLI('this','config');
+//            def oscli = new OpenshiftCLI();
+            println "openshift cli is : ${oscli}"
 
 //            renderTemplate(config.tmplOpenshift)
 //            sh "bin/render-template.sh ${config.namespace}"
             def strFile = readFile file: "openshift/templates/${config.tmplOpenshift}"
             println "files has: ${strFile.length()}"
             renderTemplate(this,config)
-            println "DONE"
+            println "called local renderTemplate"
+
 
             /** old crap **
             sh "rm -rf oc-build && mkdir -p oc-build/deployments"
