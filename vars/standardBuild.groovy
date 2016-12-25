@@ -20,10 +20,10 @@ def static renderTemplate(Script script,def config) {
     println "TITE1 "
 
     try {
-        script.openshiftCreateResource jsonyaml: strFile, namespace: 'dev', verbose: '5'
+        script.openshiftCreateResource jsonyaml: strFile, namespace: 'dev', verbose: 'true'
     } catch (Exception e) {
         script.echo "Silengly ignoring exception : "
-        script.echo e
+        script.echo e.toString()
     }
     /** **
     Yaml templateYml = new Yaml()
