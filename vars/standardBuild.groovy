@@ -36,20 +36,20 @@ def static renderTemplate(Script script,def config) {
         script.echo "TITE2 what a bitch! "
         def yamlParser = templateYml.load(strFile)
         script.echo "TITE3 holly moses! "
+        script.echo "template is ${yamlParser.getClass()}"
+        for (itm in yamlParser.get('objects')) {
+            script.echo "Iterating over ${itm} "
+            script.sh "echo oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab "
+        }
     } catch (Exception e) {
         script.echo "Silengly ignoring _expected_ exception .. "
         script.echo e.toString()
     }
     /** **
-    println "template is ${yamlParser.getClass()}"
-    for (itm in yamlParser.get('objects')) {
-        println "Iterating over ${itm} "
-        script.sh "echo oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab "
 //        def proc = "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab ".execute()
 //        def outputStream = new StringBuffer()
 //        proc.waitForProcessOutput(outputStream,System.err)
 //        println outputStream.toString()
-    }
 //    is.close()
      /** **/
 }
