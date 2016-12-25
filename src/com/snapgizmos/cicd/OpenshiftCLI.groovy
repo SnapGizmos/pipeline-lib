@@ -24,7 +24,8 @@ class OpenshiftCLI implements Serializable {
 
     def renderTemplate() {
         script.echo "OpenshiftCLI.renderTemplate() Config is actually '${config}' "
-        boolean[] boolArray = new boolean[]{true,false,true};
+        boolean[] boolArray
+        boolArray = [true, false, true];
         JSONArray jsonArray = JSONArray.fromObject( boolArray );
         System.out.println( jsonArray );
     }
