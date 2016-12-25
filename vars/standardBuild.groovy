@@ -38,7 +38,7 @@ def static renderTemplate(Script script,def config) {
         script.echo "TITE3 holly moses! "
         def j = yamlParser.get('objects').size()
         script.echo "template is ${yamlParser.getClass()}"
-        for (i=0; i< j; i++) {
+        for (int i=0; i< j; i++) {
             script.echo "Iterating ... "
             script.echo "Iterating over ${yamlParser['objects'][i]} "
 //            script.sh "echo oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab "
