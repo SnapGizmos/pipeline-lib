@@ -70,21 +70,25 @@ class OpenshiftHelper implements Serializable {
         def strTemplate = script.sh script: "oc process -n ${this.config.namespace} -o yaml ${tmplName} ${strParams} ", returnStdout: true
         script.echo strTemplate
         def yamlParser
-        try {
-            def ymlTemplate = new Yaml()
-            yamlParser = ymlTemplate.load(strTemplate)
-        } catch (Exception e) {
-            script.echo "Silengly ignoring _expected_ exception .. "
-            script.echo "toString ${e.toString()} "
-            script.echo "getMessage ${e.getMessage()} "
-            throw e
-        }
+//        try {
+//            def ymlTemplate = new Yaml()
+//            yamlParser = ymlTemplate.load(strTemplate)
+//        } catch (Exception e) {
+//            script.echo "Silengly ignoring _expected_ exception .. "
+//            script.echo "toString ${e.toString()} "
+//            script.echo "getMessage ${e.getMessage()} "
+//            throw e
+//        }
 
         /** **
          2.- parse template file so we can get the objects within. The idea here is to be able to
          delete them from the openshift cluster, so objects get refreshed when reprocessing the template
          /** **/
         script.echo "OpenshiftHelper.processTemplate($tname) 2.- parse old processed template file so we can get the objects for deletion related to the template "
+        def ymlTemplate = new Yaml()
+        script.echo "Object created"
+        yamlParser = ymlTemplate.load(strTemplate)
+        script.echo "Object loaded"
         def aObj = yamlParser.get('objects')
         def j = aObj.size()
         script.echo "template class is ${yamlParser.getClass().getName()} "
@@ -147,7 +151,7 @@ class OpenshiftHelper implements Serializable {
             def key = keys[i]
             def itm = this.config.environment[key]
             this.script.echo "going over ${key}=${itm} "
-            params = "${params}${key}=\'${itm}\'\n"
+            if (itm) params = "${params}${key}=\'${itm}\'\n"
         }
         this.script.sh "echo params ${params} "
         return params
