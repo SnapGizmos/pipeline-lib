@@ -95,7 +95,7 @@ class OpenshiftHelper implements Serializable {
         script.echo "Raw template is ${tmplName}"
         def rawParams2 = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'", returnStdout: true
         script.echo "Raw params is ${rawParams2}"
-        def strParams = this.getParams()
+        strParams = this.getParams()
 
         /** **
         5.- render the template with all of the matching parameters, so objects are created
