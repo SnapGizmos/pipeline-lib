@@ -43,15 +43,16 @@ class OpenshiftHelper implements Serializable {
         script.sh "echo TITE1 "
         println "TITE1 "
 
-        def strParams = this.renderParams()
-
         try {
             Yaml templateYml = new Yaml()
             script.echo "TITE2 what a bitch! "
             def yamlParser = templateYml.load(strFile)
             script.echo "TITE3 holly moses! "
+
+            def tmplName = yamlParser.get('metadata').get('name')
+
             def j = yamlParser.get('objects').size()
-            script.echo "template is ${yamlParser.getClass()}"
+            script.echo "template is ${yamlParser.getClass()} "
             for (int i = 0; i < j; i++) {
                 script.echo "Iterating ... "
                 script.echo "Iterating over ${yamlParser['objects'][i]} "
@@ -62,6 +63,11 @@ class OpenshiftHelper implements Serializable {
             script.echo e.toString()
             script.echo e.getMessage()
         }
+
+        script.echo "Raw template is ${tmplName}"
+        def rawParams = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\w*' | grep -v '^NAME$')", returnStdout: true
+        script.echo "Raw params is ${rawParams}"
+        def strParams = this.renderParams()
 
         try {
             script.openshiftCreateResource jsonyaml: strFile, namespace: 'dev', verbose: 'false'
@@ -90,7 +96,7 @@ class OpenshiftHelper implements Serializable {
         for (def i = 0; i < j; i++) {
             def key = keys[i]
             def itm = this.config.environment[key]
-            println "going over ${key}=${itm} "
+            this.script.echo "going over ${key}=${itm} "
             params = "${params}${key}=\'${itm}\'\n"
         }
         this.script.sh "echo params ${params} "
