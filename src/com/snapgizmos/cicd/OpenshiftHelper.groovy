@@ -61,7 +61,9 @@ class OpenshiftHelper implements Serializable {
         def rawParams = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'", returnStdout: true
         script.echo "Raw params is ${rawParams}"
 //        def tmpVar = rawParams.split("\n").collect {it as String}
-        def tmpVar = Eval.me(rawParams.split("\n"))
+        def tmpVar2 = rawParams.split("\n")
+        script.echo "prrarams tmpVar2 ${tmpVar2.getClass()} / ${tmpVar2} "
+        def tmpVar = Eval.me(tmpVar2)
         script.echo "array prrarams is ${tmpVar.getClass()} / ${tmpVar} "
 
         /** **
