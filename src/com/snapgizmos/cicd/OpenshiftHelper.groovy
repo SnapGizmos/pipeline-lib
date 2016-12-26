@@ -115,10 +115,9 @@ class OpenshiftHelper implements Serializable {
                     script.echo "next!"
                     script.sh "echo oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} 2>&1"
                 } catch (Exception e) {
-                    script.echo "i is ${i} "
                     def itm = aObj[i]
-                    script.echo "Did _NOT_ delete entry ${itm['kind']} / ${itm['metadata']['name']}"
-                    script.sh "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} 2>&1"
+                    script.echo "Did _NOT_ delete entry ${itm['kind']}/${itm['metadata']['name']}"
+//                    script.sh "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} 2>&1"
 //                    script.echo e.dump()
                 }
             }
@@ -138,7 +137,7 @@ class OpenshiftHelper implements Serializable {
 //            script.echo strFile
             script.openshiftCreateResource jsonyaml: strFile, namespace: config.namespace, verbose: 'false'
             script.echo 'status OK'
-            script.sh "oc get template/${tmplName} -n ${config.nameserver} "
+            script.sh "oc get template/${tmplName} -n ${config.nameserver} 2>&1"
         } catch (Exception e) {
             script.echo "While creatingResource - Silengly ignoring exception : "
             script.sh "oc get template/${tmplName} -n ${config.nameserver} 2>&1"
