@@ -91,12 +91,17 @@ class OpenshiftHelper implements Serializable {
             script.echo e.dump()
         }
         script.echo "I believe we are done ... "
-        /** **
+        /** **/
+        try {
+
         for (int i = 0; i < j; i++) {
             def itm = aObj[i]
             script.echo "Iterating over ${itm} "
 //            script.sh "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n ${this.config.namespace} "
-//            script.openshiftDeleteResourceByKey "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n ${this.config.namespace} "
+            script.openshiftDeleteResourceByKey types: itm['kind'], keys: itm['metadata']['name'], namespace: this.config.namespace, verbose:'true' "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n ${this.config.namespace} "
+        }
+        } catch (Exception e) {
+            script.echo e.dump()
         }
          /** **/
 
@@ -108,7 +113,7 @@ class OpenshiftHelper implements Serializable {
         } catch (Exception e) {
             script.echo "Silengly ignoring exception : "
 //        script.echo e.getStackTrace()
-            script.echo e.toString()
+            script.echo e.dump()
         }
 
         /** **
