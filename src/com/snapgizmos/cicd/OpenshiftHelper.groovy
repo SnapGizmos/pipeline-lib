@@ -102,14 +102,19 @@ class OpenshiftHelper implements Serializable {
             def aObj = yamlParser.get('items')
             def j = aObj.size()
             for (int i = 0; i < j; i++) {
-                def itm = aObj[i]
-                script.echo "Iterating over ${itm} "
+                try {
+                    def itm = aObj[i]
+                    script.echo "Iterating over ${itm} "
 //            script.sh "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n ${this.config.namespace} "
-                script.openshiftDeleteResourceByKey types: itm['kind'], keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'true'
-                script.echo "next!"
+                    script.openshiftDeleteResourceByKey types: itm['kind'], keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'true'
+                    script.echo "next!"
+                } catch (Exception e) {
+                    script.echo "HOLLY COW!!! "
+                    script.echo e.dump()
+                }
             }
         } catch (Exception e) {
-            script.echo e.getCause().dump()
+            script.echo e.dump()
         }
         /** **/
 
