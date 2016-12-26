@@ -50,23 +50,22 @@ class OpenshiftHelper implements Serializable {
             tmplName = yamlParser.get('metadata').get('name').toString()
             script.echo "tmplName = ${tmplName}"
 
-//            def rawParams = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$')", returnStdout: true
-            script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
-            script.echo "Raw template is ${tmplName}"
-//            script.sh "echo oc get templates "
-//            script.sh "oc project dev "
-//            script.sh "oc process --parameters sometemplate  || echo 'something went wrong' "
-
-//            script.sh script: "oc process --parameters -n ${this.config.namespace} 2>&1 || echo 'fallo' ", returnStdout: false
-//            script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} "
-//            def rawParams = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} ", returnStdout: true
-//            script.echo "Raw params is ${rawParams}"
         } catch (Exception e) {
             script.echo "Silengly ignoring _expected_ exception .. "
             script.echo "toString ${e.toString()} "
             script.echo "getMessage ${e.getMessage()} "
             throw e
         }
+//            def rawParams = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$')", returnStdout: true
+        script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
+        script.echo "Raw template is ${tmplName}"
+            script.sh "echo oc get templates "
+            script.sh "oc project dev "
+            script.sh "oc process --parameters sometemplate  || echo 'something went wrong' "
+//            script.sh script: "oc process --parameters -n ${this.config.namespace} 2>&1 || echo 'fallo' ", returnStdout: false
+//            script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} "
+//            def rawParams = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} ", returnStdout: true
+//            script.echo "Raw params is ${rawParams}"
 
         /** **
          2.- parse template file so we can get the objects within. The idea here is to be able to
