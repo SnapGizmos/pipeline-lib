@@ -93,17 +93,16 @@ class OpenshiftHelper implements Serializable {
         script.echo "I believe we are done ... "
         /** **/
         try {
-
-        for (int i = 0; i < j; i++) {
-            def itm = aObj[i]
-            script.echo "Iterating over ${itm} "
+            for (int i = 0; i < j; i++) {
+                def itm = aObj[i]
+                script.echo "Iterating over ${itm} "
 //            script.sh "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n ${this.config.namespace} "
-            script.openshiftDeleteResourceByKey types: itm['kind'], keys: itm['metadata']['name'], namespace: this.config.namespace, verbose:'true' "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n ${this.config.namespace} "
-        }
+                script.openshiftDeleteResourceByKey types: itm['kind'], keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'true'
+            }
         } catch (Exception e) {
-            script.echo e.dump()
+            script.echo e.getCause().dump()
         }
-         /** **/
+        /** **/
 
         /** **
          3.- create this new template we have on file
@@ -113,7 +112,7 @@ class OpenshiftHelper implements Serializable {
         } catch (Exception e) {
             script.echo "Silengly ignoring exception : "
 //        script.echo e.getStackTrace()
-            script.echo e.dump()
+            script.echo e.getCause().dump()
         }
 
         /** **
