@@ -49,6 +49,10 @@ class OpenshiftHelper implements Serializable {
             yamlParser = templateYml.load(strFile)
             tmplName = yamlParser.get('metadata').get('name')
             script.echo "tmplName = ${tmplName}"
+
+            script.echo "Raw template is ${tmplName}"
+            def rawParams = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$')", returnStdout: true
+            script.echo "Raw params is ${rawParams}"
         } catch (Exception e) {
             script.echo "Silengly ignoring _expected_ exception .. "
             script.echo e.toString()
@@ -66,7 +70,7 @@ class OpenshiftHelper implements Serializable {
         for (int i = 0; i < j; i++) {
             def itm = aObj[i]
             script.echo "Iterating over ${itm} "
-            script.sh "echo oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab "
+            script.sh "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n poclab "
         }
 
         /** **
