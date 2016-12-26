@@ -79,17 +79,21 @@ class OpenshiftHelper implements Serializable {
         def ymlTemplate = new Yaml()
         script.echo "Object created"
         yamlParser = ymlTemplate.load(strTemplate)
-        script.echo "Object loaded ${yamlParser}"
+//        script.echo "Object loaded ${yamlParser}"
         // TODO: Figure out why here it's items, and on a file it's called objects
         def aObj = yamlParser.get('items')
         script.echo "aObjc is of class  ${aObj.getClass().getName()}"
         def j = aObj.size()
         script.echo "template class is ${yamlParser.getClass().getName()} "
+        script.openshiftDeleteResourceByJsonYaml jsonyaml: strTemplate
+        /** **
         for (int i = 0; i < j; i++) {
             def itm = aObj[i]
             script.echo "Iterating over ${itm} "
-            script.sh "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n ${this.config.namespace} "
+//            script.sh "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n ${this.config.namespace} "
+//            script.openshiftDeleteResourceByKey "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n ${this.config.namespace} "
         }
+         /** **/
 
         /** **
          3.- create this new template we have on file
@@ -143,7 +147,7 @@ class OpenshiftHelper implements Serializable {
         for (def i = 0; i < j; i++) {
             def key = keys[i]
             def itm = this.config.environment[key]
-            this.script.echo "going over ${key}=${itm} "
+//            this.script.echo "going over ${key}=${itm} "
             if (itm) params = "${params}${key}=\'${itm}\'\n"
         }
         this.script.sh "echo params ${params} "
