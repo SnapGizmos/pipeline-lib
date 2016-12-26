@@ -17,5 +17,14 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Grab:snakeyaml-1.17.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.groovy/grapes/org.yaml/snakeyaml/jars/snakeyaml-1.17.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
