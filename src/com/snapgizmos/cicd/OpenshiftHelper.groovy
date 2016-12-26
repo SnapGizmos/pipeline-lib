@@ -64,6 +64,9 @@ class OpenshiftHelper implements Serializable {
         script.echo "${rawParams.getClass()} prrarams tmpVar3 ${tmpVar3.getClass().toString()} / \n${tmpVar3} "
         def tmpVar2 = rawParams.split("\n")
         script.echo "${rawParams.getClass()} prrarams tmpVar2 ${tmpVar2.getClass().toString()} / \n${tmpVar2} "
+        for (def i = 0; i<tmpVar2.size(); i++) {
+            script.echo "got item ${tmpVar2[$i]}"
+        }
         def tmpVar = Eval.me(tmpVar2.toString())
         script.echo " prrarams is ${tmpVar.getClass()} / ${tmpVar} "
 
