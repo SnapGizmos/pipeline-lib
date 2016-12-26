@@ -95,11 +95,12 @@ class OpenshiftHelper implements Serializable {
 //                script.openshiftDeleteResourceByJsonYaml jsonyaml: strTemplate, namespace: config.namespace, verbose: 'false'
 //            }
         } catch (Exception e) {
-            script.echo "The deletion of the whole jsonyaml did not cut it ... "
-            script.echo e.dump()
+//            script.echo "The deletion of the whole jsonyaml did not cut it ... "
+//            script.echo e.dump()
         }
         script.echo 'I believe we are done with deletion 1... '
         /** **/
+        try {
             def yamlParser
             def ymlTemplate = new Yaml()
             yamlParser = ymlTemplate.load(strTemplate)
@@ -113,12 +114,12 @@ class OpenshiftHelper implements Serializable {
                     script.openshiftDeleteResourceByKey types: itm['kind'], keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'false'
                     script.echo "next!"
                 } catch (Exception e) {
+                    script.echo "i is ${i} "
                     def itm = aObj[i]
                     script.echo "Did _NOT_ delete entry ${itm['kind']} / ${itm['metadata']['name']}"
 //                    script.echo e.dump()
                 }
             }
-        try {
             println('phony')
         } catch (Exception e) {
             script.echo "Did not _delete_ template contents .. in general"
