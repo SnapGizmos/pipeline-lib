@@ -79,6 +79,8 @@ class OpenshiftHelper implements Serializable {
                 script.echo "Iterating over ${itm} "
                 script.sh "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n ${this.config.namespace} "
             }
+        } catch (Exception e1) {
+            throw e1
         }
 
         /** **
