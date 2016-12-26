@@ -44,9 +44,9 @@ class OpenshiftHelper implements Serializable {
         script.echo "OpenshiftHelper.processTemplate($tname) 1.- obtain template name from the file, so we can then query the openshift api for stuff"
         def tmplName
 
-        def ymlTemplate = new Yaml()
-        def yamlParser
         try {
+            def ymlTemplate = new Yaml()
+            def yamlParser
             yamlParser = ymlTemplate.load(strFile)
             tmplName = yamlParser.get('metadata').get('name').toString()
             script.echo "tmplName = ${tmplName}"
@@ -56,17 +56,17 @@ class OpenshiftHelper implements Serializable {
             script.echo "getMessage ${e.getMessage()} "
             throw e
         }
-        def strTemplate
+        def strTemplate = ''
         try {
             def tmp
             script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
             script.echo "Raw template is ${tmplName}"
             tmp = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'", returnStdout: true
-            script.echo "Script ran, with this output ${tmp}"
+            script.echo "Script ran, with this output: ${tmp}"
             if (tmp) {
                 def strParams = this.getParams(tmp.tokenize("\n"))
                 strTemplate = script.sh script: "oc process -n ${this.config.namespace} -o yaml ${tmplName} ${strParams} ", returnStdout: true
-                script.echo strTemplate
+                script.echo "strTemplate = ${strTemplate}"
             }
         } catch (Exception e) {
             script.echo e.dump()
@@ -101,9 +101,9 @@ class OpenshiftHelper implements Serializable {
         script.echo 'I believe we are done with deletion 1... '
         /** **/
         try {
-//            def yamlParser
-//            def ymlTemplate = new Yaml()
-            yamlParser = ymlTemplate.load(strTemplate)
+            def yamlParser
+            def ymlTemplate = new Yaml()
+            yamlParser = ymlTemplate.load(strTemplate.toString())
             def aObj = yamlParser.get('items')
             def j = aObj.size()
             for (int i = 0; i < j; i++) {
