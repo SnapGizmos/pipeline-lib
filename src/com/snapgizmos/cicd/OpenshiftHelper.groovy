@@ -47,7 +47,7 @@ class OpenshiftHelper implements Serializable {
         try {
             Yaml templateYml = new Yaml()
             yamlParser = templateYml.load(strFile)
-            tmplName = yamlParser.get('metadata').get('name')
+            tmplName = yamlParser.get('metadata').get('name').toString()
             script.echo "tmplName = ${tmplName}"
 
 //            def rawParams = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$')", returnStdout: true
