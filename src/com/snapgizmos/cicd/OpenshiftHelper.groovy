@@ -47,40 +47,37 @@ class OpenshiftHelper implements Serializable {
         def yamlNewParser
         def yamlOldParser
         def tmplName
-        try {
+
+//        try {
             yamlNewParser = ymlNewTemplate.load(strFile)
             tmplName = yamlNewParser.get('metadata').get('name').toString()
             script.echo "tmplName = ${tmplName}"
-        } catch (Exception e) {
-            script.echo "Silengly ignoring _expected_ exception .. "
-            script.echo "toString ${e.toString()} "
-            script.echo "getMessage ${e.getMessage()} "
-            throw e
-        }
+//        } catch (Exception e) {
+//            script.echo "Silengly ignoring _expected_ exception .. "
+//            script.echo "toString ${e.toString()} "
+//            script.echo "getMessage ${e.getMessage()} "
+//            throw e
+//        }
         script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
         script.echo "Raw template is ${tmplName}"
         def tmp = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'", returnStdout: true
-        def strParams = null
-        strParams = this.getParams(tmp.tokenize("\n"))
+        def strParams = this.getParams(tmp.tokenize("\n"))
         def strTemplate = script.sh script: "oc process -n ${this.config.namespace} -o yaml ${tmplName} ${strParams} ", returnStdout: true
-        try {
-            script.echo strTemplate
-            yamlOldParser = ymlOldTemplate.load(strTemplate)
-            /** **
-             2.- parse template file so we can get the objects within. The idea here is to be able to
-             delete them from the openshift cluster, so objects get refreshed when reprocessing the template
-             /** **/
-            script.echo "OpenshiftHelper.processTemplate($tname) 2.- parse template file so we can get the objects for deletion related to the template "
-            def aObj = yamlOldParser.get('objects')
-            def j = aObj.size()
-            script.echo "template class is ${yamlOldParser.getClass().getName()} "
-            for (int i = 0; i < j; i++) {
-                def itm = aObj[i]
-                script.echo "Iterating over ${itm} "
-                script.sh "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n ${this.config.namespace} "
-            }
-        } catch (Exception e1) {
-            throw e1
+
+        script.echo strTemplate
+        yamlOldParser = ymlOldTemplate.load(strTemplate)
+        /** **
+         2.- parse template file so we can get the objects within. The idea here is to be able to
+         delete them from the openshift cluster, so objects get refreshed when reprocessing the template
+         /** **/
+        script.echo "OpenshiftHelper.processTemplate($tname) 2.- parse template file so we can get the objects for deletion related to the template "
+        def aObj = yamlOldParser.get('objects')
+        def j = aObj.size()
+        script.echo "template class is ${yamlOldParser.getClass().getName()} "
+        for (int i = 0; i < j; i++) {
+            def itm = aObj[i]
+            script.echo "Iterating over ${itm} "
+            script.sh "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n ${this.config.namespace} "
         }
 
         /** **
