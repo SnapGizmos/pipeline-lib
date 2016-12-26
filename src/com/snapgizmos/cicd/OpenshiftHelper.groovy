@@ -60,8 +60,9 @@ class OpenshiftHelper implements Serializable {
         script.echo "Raw template is ${tmplName}"
         def rawParams = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'", returnStdout: true
         script.echo "Raw params is ${rawParams}"
-        def tmpVar = rawParams.split("\n").collect {it as String}
-        script.echo "array prrarams is ${tmpVar}"
+//        def tmpVar = rawParams.split("\n").collect {it as String}
+        def tmpVar = rawParams.split("\n")
+        script.echo "array prrarams is ${tmpVar.getClass()} / ${tmpVar} "
 
         /** **
          2.- parse template file so we can get the objects within. The idea here is to be able to
