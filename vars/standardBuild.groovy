@@ -62,7 +62,7 @@ def origin(body) {
             try {
                 oscli = new OpenshiftHelper(this,config);
                 println "openshift cli is : ${oscli}"
-                oscli.testJson()
+//                oscli.testJson()
             } catch (Exception e) {
                 println e.toString()
             }
