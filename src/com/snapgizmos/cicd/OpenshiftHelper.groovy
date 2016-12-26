@@ -37,45 +37,61 @@ class OpenshiftHelper implements Serializable {
         println "Config is actually ${this.config}"
         script.echo "Config is actually '${this.config}' "
         def strFile = script.readFile file: "openshift/templates/${this.config.tmplOpenshift}"
-//    script.echo strFile
-//    def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
-        script.sh "echo TITE1 "
-        println "TITE1 "
-
+        /** **
+        1.- obtain template name from the file, so we can then query the openshift api for stuff
+        /** **/
+        script.echo "OpenshiftHelper.processTemplate($tname) 1.- obtain template name from the file, so we can then query the openshift api for stuff"
+        def yamlParser
+        def tmplName
         try {
             Yaml templateYml = new Yaml()
-            script.echo "TITE2 what a bitch! "
-            def yamlParser = templateYml.load(strFile)
-            script.echo "TITE3 holly moses! "
-
-            def tmplName = yamlParser.get('metadata').get('name')
-
-            def j = yamlParser.get('objects').size()
-            script.echo "template is ${yamlParser.getClass()} "
-            for (int i = 0; i < j; i++) {
-                script.echo "Iterating ... "
-                script.echo "Iterating over ${yamlParser['objects'][i]} "
-//            script.sh "echo oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab "
-            }
+            yamlParser = templateYml.load(strFile)
+            tmplName = yamlParser.get('metadata').get('name')
+            script.echo "tmplName = ${tmplName}"
         } catch (Exception e) {
             script.echo "Silengly ignoring _expected_ exception .. "
             script.echo e.toString()
             script.echo e.getMessage()
         }
 
-        script.echo "Raw template is ${tmplName}"
-        def rawParams = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\w*' | grep -v '^NAME$')", returnStdout: true
-        script.echo "Raw params is ${rawParams}"
-        def strParams = this.renderParams()
+        /** **
+         2.- parse template file so we can get the objects within. The idea here is to be able to
+         delete them from the openshift cluster, so objects get refreshed when reprocessing the template
+         /** **/
+        script.echo "OpenshiftHelper.processTemplate($tname) 2.- parse template file so we can get the objects for deletion related to the template "
+        def keys = yamlParser.get('objects') as String[]
+        def j = keys.size()
+        script.echo "template class is ${yamlParser.getClass()} with these keys ${keys} "
+        for (int i = 0; i < j; i++) {
+            def key = keys[i]
+            def itm = yamlParser.get('objects').get(key)
+            script.echo "Iterating over ${itm} "
+            script.sh "echo oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab "
+        }
 
+        /** **
+         3.- create this new template we have on file
+         /** **/
         try {
-            script.openshiftCreateResource jsonyaml: strFile, namespace: 'dev', verbose: 'false'
+            script.openshiftCreateResource jsonyaml: strFile, namespace: config.namespace, verbose: 'false'
         } catch (Exception e) {
             script.echo "Silengly ignoring exception : "
 //        script.echo e.getStackTrace()
             script.echo e.toString()
         }
+
+        /** **
+        4.- compile the parameters from the configuration environment that this template asks for within the parameters
+        /** **/
+        script.echo "Raw template is ${tmplName}"
+        def rawParams = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$')", returnStdout: true
+        script.echo "Raw params is ${rawParams}"
+        def strParams = this.renderParams()
+
+        /** **
+        5.- render the template with all of the matching parameters, so objects are created
+        /** **/
 
         /** **
          //        def proc = "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab ".execute()
