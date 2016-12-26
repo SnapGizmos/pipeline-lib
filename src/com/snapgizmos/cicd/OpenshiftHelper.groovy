@@ -86,7 +86,8 @@ class OpenshiftHelper implements Serializable {
          script.echo "aObjc is of class  ${aObj.getClass().getName()}"
          def j = aObj.size()
          script.echo "template class is ${yamlParser.getClass().getName()} "
-         /** **/
+
+         /** **
         try {
             script.openshiftDeleteResourceByKey types: 'template', keys: tmplName, namespace: this.config.namespace, verbose: 'false'
             script.echo "Now that we have deleted the template ... "
@@ -119,6 +120,7 @@ class OpenshiftHelper implements Serializable {
                 }
             }
         } catch (Exception e) {
+            script.echo "Did not _delete_ template contents .. in general"
             script.echo e.dump()
         }
         /** **/
