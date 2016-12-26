@@ -88,17 +88,19 @@ class OpenshiftHelper implements Serializable {
          script.echo "template class is ${yamlParser.getClass().getName()} "
          /** **/
         try {
+            script.openshiftDeleteResourceByKey types: 'template', keys: tmplName, namespace: this.config.namespace, verbose: 'false'
+            script.echo "Now that we have deleted the template ... "
+
             if (strTemplate) {
                 script.openshiftDeleteResourceByJsonYaml jsonyaml: strTemplate, namespace: config.namespace, verbose: 'false'
             }
         } catch (Exception e) {
+            script.echo "The deletion of the whole jsonyaml did not cut it ... "
             script.echo e.dump()
         }
         script.echo 'I believe we are done with deletion 1... '
         /** **/
         try {
-            script.openshiftDeleteResourceByKey types: 'template', keys: tmplName, namespace: this.config.namespace, verbose: 'false'
-            script.echo "Now that we have deleted the template ... "
 
             def yamlParser
             def ymlTemplate = new Yaml()
