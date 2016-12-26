@@ -113,12 +113,13 @@ class OpenshiftHelper implements Serializable {
                     script.openshiftDeleteResourceByKey types: itm['kind'], keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'false'
                     script.echo "next!"
                 } catch (Exception e) {
+                    def itm = aObj[i]
                     script.echo "Did _NOT_ delete entry ${itm['kind']} / ${itm['metadata']['name']}"
 //                    script.echo e.dump()
                 }
             }
         try {
-            script.echo "phony"
+            println('phony')
         } catch (Exception e) {
             script.echo "Did not _delete_ template contents .. in general"
             script.echo e.dump()
