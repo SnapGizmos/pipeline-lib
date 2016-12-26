@@ -128,11 +128,12 @@ class OpenshiftHelper implements Serializable {
          3.- create this new template we have on file
          /** **/
         try {
+            script.echo "OpenshiftHelper.processTemplate($tname) 3.- create this new template we have on file "
             script.echo "------------------- This is the Actual TeMPLate ----------------"
             script.echo strFile
             script.openshiftCreateResource jsonyaml: strFile, namespace: config.namespace, verbose: 'true'
         } catch (Exception e) {
-            script.echo "Silengly ignoring exception : "
+            script.echo "While creatingResource - Silengly ignoring exception : "
 //        script.echo e.getStackTrace()
             script.echo e.dump()
         }
@@ -141,6 +142,7 @@ class OpenshiftHelper implements Serializable {
          4.- compile the parameters from the configuration environment that this template asks for within the parameters
          /** **/
         try {
+            script.echo "OpenshiftHelper.processTemplate($tname) 4.- compile the parameters from the configuration environment that this template asks for within the parameters"
             def tmp
             script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
             script.echo "Raw template is ${tmplName}"
@@ -158,7 +160,9 @@ class OpenshiftHelper implements Serializable {
          5.- render the template with all of the matching parameters, so objects are created
          /** **/
         try {
+            script.echo "OpenshiftHelper.processTemplate($tname) 5.- render the template with all of the matching parameters, so objects are created"
             if (strTemplate) {
+                script.echo strTemplate
                 script.openshiftCreateResource jsonyaml: strTemplate, namespace: config.namespace, verbose: 'false'
             }
         } catch (Exception e) {
