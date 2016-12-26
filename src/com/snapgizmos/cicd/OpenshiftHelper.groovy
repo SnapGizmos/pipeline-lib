@@ -75,22 +75,23 @@ class OpenshiftHelper implements Serializable {
          delete them from the openshift cluster, so objects get refreshed when reprocessing the template
          /** **/
         script.echo "OpenshiftHelper.processTemplate($tname) 2.- parse old processed template file so we can get the objects for deletion related to the template "
+        /** **
         def yamlParser
         def ymlTemplate = new Yaml()
         script.echo "Object created"
         yamlParser = ymlTemplate.load(strTemplate)
 //        script.echo "Object loaded ${yamlParser}"
-        // TODO: Figure out why here it's items, and on a file it's called objects
         def aObj = yamlParser.get('items')
         script.echo "aObjc is of class  ${aObj.getClass().getName()}"
         def j = aObj.size()
         script.echo "template class is ${yamlParser.getClass().getName()} "
+        /** **/
         try {
             script.openshiftDeleteResourceByJsonYaml jsonyaml: strTemplate, namespace: config.namespace, verbose: 'true'
         } catch (Exception e) {
             script.echo e.dump()
         }
-        script.echo "I believe we are done ... "
+        script.echo "I believe we are done with deletion #1... "
         /** **/
         try {
             for (int i = 0; i < j; i++) {
@@ -98,6 +99,7 @@ class OpenshiftHelper implements Serializable {
                 script.echo "Iterating over ${itm} "
 //            script.sh "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n ${this.config.namespace} "
                 script.openshiftDeleteResourceByKey types: itm['kind'], keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'true'
+                script.echo "next!"
             }
         } catch (Exception e) {
             script.echo e.getCause().dump()
