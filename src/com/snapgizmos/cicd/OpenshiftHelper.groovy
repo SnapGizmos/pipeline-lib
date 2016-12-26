@@ -51,14 +51,14 @@ class OpenshiftHelper implements Serializable {
             script.echo "tmplName = ${tmplName}"
 
 //            def rawParams = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$')", returnStdout: true
-            script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$')"
+            script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
             script.echo "Raw template is ${tmplName}"
-            script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$')"
+            script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
             script.echo "Raw params is ${rawParams}"
         } catch (Exception e) {
             script.echo "Silengly ignoring _expected_ exception .. "
-            script.echo e.toString()
-            script.echo e.getMessage()
+            script.echo "toString ${e.toString()} "
+            script.echo "getMessage ${e.getMessage()} "
             throw e
         }
 
