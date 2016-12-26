@@ -4,7 +4,7 @@ package com.snapgizmos.cicd
         @Grab('org.yaml:snakeyaml:1.17')
 )
 @Grapes(
-        @Grab(group='org.json', module='json', version='20160810')
+        @Grab(group = 'org.json', module = 'json', version = '20160810')
 )
 
 import org.json.JSONObject;
@@ -29,52 +29,69 @@ class OpenshiftHelper implements Serializable {
     def testJson() {
         script.echo "OpenshiftHelper.testJson() Config is actually '${config}' "
         def strFile = script.readFile file: "openshift/templates/test.json"
-        def jsonArray = new JSONObject( strFile )
+        def jsonArray = new JSONObject(strFile)
         script.echo jsonArray.toString()
     }
 
     def processTemplate(def tname) {
-    println "Config is actually ${this.config}"
-    script.echo "Config is actually '${this.config}' "
-    def strFile = script.readFile file: "openshift/templates/${this.config.tmplOpenshift}"
+        println "Config is actually ${this.config}"
+        script.echo "Config is actually '${this.config}' "
+        def strFile = script.readFile file: "openshift/templates/${this.config.tmplOpenshift}"
 //    script.echo strFile
 //    def is = new ByteArrayInputStream(strFile.getBytes(StandardCharsets.UTF_8))
 //    def is = new File(baseDir,'openshift/templates/config-server-javase.yaml').newInputStream()
-    script.sh "echo TITE1 "
-    println "TITE1 "
+        script.sh "echo TITE1 "
+        println "TITE1 "
 
-    try {
-        script.openshiftCreateResource jsonyaml: strFile, namespace: 'dev', verbose: 'false'
-    } catch (Exception e) {
-        script.echo "Silengly ignoring exception : "
-//        script.echo e.getStackTrace()
-        script.echo e.toString()
-    }
+        def strParams = this.renderParams()
 
-    try {
-        Yaml templateYml = new Yaml()
-        script.echo "TITE2 what a bitch! "
-        def yamlParser = templateYml.load(strFile)
-        script.echo "TITE3 holly moses! "
-        def j = yamlParser.get('objects').size()
-        script.echo "template is ${yamlParser.getClass()}"
-        for (int i=0; i< j; i++) {
-            script.echo "Iterating ... "
-            script.echo "Iterating over ${yamlParser['objects'][i]} "
+        try {
+            Yaml templateYml = new Yaml()
+            script.echo "TITE2 what a bitch! "
+            def yamlParser = templateYml.load(strFile)
+            script.echo "TITE3 holly moses! "
+            def j = yamlParser.get('objects').size()
+            script.echo "template is ${yamlParser.getClass()}"
+            for (int i = 0; i < j; i++) {
+                script.echo "Iterating ... "
+                script.echo "Iterating over ${yamlParser['objects'][i]} "
 //            script.sh "echo oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab "
+            }
+        } catch (Exception e) {
+            script.echo "Silengly ignoring _expected_ exception .. "
+            script.echo e.toString()
+            script.echo e.getMessage()
         }
-    } catch (Exception e) {
-        script.echo "Silengly ignoring _expected_ exception .. "
-        script.echo e.toString()
-        script.echo e.getMessage()
+
+        try {
+            script.openshiftCreateResource jsonyaml: strFile, namespace: 'dev', verbose: 'false'
+        } catch (Exception e) {
+            script.echo "Silengly ignoring exception : "
+//        script.echo e.getStackTrace()
+            script.echo e.toString()
+        }
+
+        /** **
+         //        def proc = "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab ".execute()
+         //        def outputStream = new StringBuffer()
+         //        proc.waitForProcessOutput(outputStream,System.err)
+         //        println outputStream.toString()
+         //    is.close()
+         /** **/
     }
-    /** **
-//        def proc = "oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab ".execute()
-//        def outputStream = new StringBuffer()
-//        proc.waitForProcessOutput(outputStream,System.err)
-//        println outputStream.toString()
-//    is.close()
-     /** **/
-}
+
+    def renderParams() {
+        println "config environments are: " + config.environment.size()
+        def params = ''
+        def j = config.environment.size()
+        for (def i=0; i<j; i++) {
+            def itm = config.environment[i]
+            this.script.echo "going over ${itm.key}=${itm.value} for " + System.getenv('WORKSPACE')
+//                sh "echo ${itm.key}=${itm.value} >> $WORKSPACE/openshift/env"
+            params = "${params}${itm.key}=\'${itm.value}\'\n"
+        }
+        this.script.sh "echo params ${params} "
+        return params
+    }
 
 }
