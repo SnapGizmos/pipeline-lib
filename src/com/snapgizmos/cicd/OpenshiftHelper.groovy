@@ -88,8 +88,9 @@ class OpenshiftHelper implements Serializable {
         def ymlTemplate = new Yaml()
         script.echo "Object created"
         yamlParser = ymlTemplate.load(strTemplate)
-        script.echo "Object loaded"
+        script.echo "Object loaded ${yamlParser}"
         def aObj = yamlParser.get('objects')
+        script.echo "aObjc is of class  ${aObj.getClass().getName()}"
         def j = aObj.size()
         script.echo "template class is ${yamlParser.getClass().getName()} "
         for (int i = 0; i < j; i++) {
