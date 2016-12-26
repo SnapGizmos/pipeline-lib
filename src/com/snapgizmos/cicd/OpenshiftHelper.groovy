@@ -85,7 +85,11 @@ class OpenshiftHelper implements Serializable {
         script.echo "aObjc is of class  ${aObj.getClass().getName()}"
         def j = aObj.size()
         script.echo "template class is ${yamlParser.getClass().getName()} "
-        script.openshiftDeleteResourceByJsonYaml jsonyaml: strTemplate, namespace: config.namespace, verbose: 'true'
+        try {
+            script.openshiftDeleteResourceByJsonYaml jsonyaml: strTemplate, namespace: config.namespace, verbose: 'true'
+        } catch (Exception e) {
+            script.echo e.dump()
+        }
         script.echo "I believe we are done ... "
         /** **
         for (int i = 0; i < j; i++) {
