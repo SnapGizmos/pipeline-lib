@@ -53,6 +53,8 @@ class OpenshiftHelper implements Serializable {
 //            def rawParams = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$')", returnStdout: true
             script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
             script.echo "Raw template is ${tmplName}"
+            script.sh "oc get templates "
+            script.sh "oc project dev "
             script.sh "oc process --parameters sometemplate  || echo 'something went wrong' "
 //            script.sh script: "oc process --parameters -n ${this.config.namespace} 2>&1 || echo 'fallo' ", returnStdout: false
 //            script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} "
