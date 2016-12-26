@@ -48,6 +48,8 @@ def origin(body) {
 
         if ('Deploy DEV' in config.targetStages)
         stage('Deploy DEV') {
+            sh "oc get projects -n ${config.namespace}"
+            sh "oc project ${config.namespace}"
             sh "oc get pods -n ${config.namespace}"
             sh "env"
             /** **
@@ -87,10 +89,10 @@ def origin(body) {
                 println e.toString()
             }
 
-            echo "called local testJson. Testing the bad apple"
-            Yaml templateYml = new Yaml()
-            def yamlParser = templateYml.load(strFile)
-            echo "template is ${yamlParser.getClass()}"
+//            echo "called local testJson. Testing the bad apple"
+//            Yaml templateYml = new Yaml()
+//            def yamlParser = templateYml.load(strFile)
+//            echo "template is ${yamlParser.getClass()}"
 
         }
 
