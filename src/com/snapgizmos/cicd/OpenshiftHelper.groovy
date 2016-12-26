@@ -42,11 +42,11 @@ class OpenshiftHelper implements Serializable {
          1.- obtain template name from the file, so we can then query the openshift api for stuff
          /** **/
         script.echo "OpenshiftHelper.processTemplate($tname) 1.- obtain template name from the file, so we can then query the openshift api for stuff"
-        def ymlTemplate = new Yaml()
-        def yamlParser
         def tmplName
 
         try {
+            def ymlTemplate = new Yaml()
+            def yamlParser
             yamlParser = ymlTemplate.load(strFile)
             tmplName = yamlParser.get('metadata').get('name').toString()
             script.echo "tmplName = ${tmplName}"
@@ -64,11 +64,14 @@ class OpenshiftHelper implements Serializable {
             script.echo "Script ran, with this output ${tmp}"
         } catch (Exception e) {
             script.echo e.dump()
+            throw e
         }
         def strParams = this.getParams(tmp.tokenize("\n"))
         def strTemplate = script.sh script: "oc process -n ${this.config.namespace} -o yaml ${tmplName} ${strParams} ", returnStdout: true
         script.echo strTemplate
+        def yamlParser
         try {
+            def ymlTemplate = new Yaml()
             yamlParser = ymlTemplate.load(strTemplate)
         } catch (Exception e) {
             script.echo "Silengly ignoring _expected_ exception .. "
