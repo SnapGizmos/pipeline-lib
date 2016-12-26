@@ -97,7 +97,7 @@ class OpenshiftHelper implements Serializable {
         script.echo 'I believe we are done with deletion 1... '
         /** **/
         try {
-            script.openshiftDeleteResourceByKey types: 'template', keys: tmplName, namespace: this.config.namespace, verbose: 'true'
+            script.openshiftDeleteResourceByKey types: 'template', keys: tmplName, namespace: this.config.namespace, verbose: 'false'
             script.echo "Now that we have deleted the template ... "
 
             def yamlParser
@@ -110,11 +110,11 @@ class OpenshiftHelper implements Serializable {
                     def itm = aObj[i]
                     script.echo "Iterating over ${itm} "
 //            script.sh "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n ${this.config.namespace} "
-                    script.openshiftDeleteResourceByKey types: itm['kind'], keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'true'
+                    script.openshiftDeleteResourceByKey types: itm['kind'], keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'false'
                     script.echo "next!"
                 } catch (Exception e) {
-                    script.echo "HOLLY COW!!! "
-                    script.echo e.dump()
+                    script.echo "Did _NOT_ delete entry ${itm['kind']} / ${itm['metadata']['name']}"
+//                    script.echo e.dump()
                 }
             }
         } catch (Exception e) {
@@ -126,11 +126,13 @@ class OpenshiftHelper implements Serializable {
          3.- create this new template we have on file
          /** **/
         try {
-            script.openshiftCreateResource jsonyaml: strFile, namespace: config.namespace, verbose: 'false'
+            script.echo "------------------- This is the Actual TeMPLate ----------------"
+            script.echo strFile
+            script.openshiftCreateResource jsonyaml: strFile, namespace: config.namespace, verbose: 'true'
         } catch (Exception e) {
             script.echo "Silengly ignoring exception : "
 //        script.echo e.getStackTrace()
-            script.echo e.getCause().dump()
+            script.echo e.dump()
         }
 
         /** **
@@ -139,6 +141,7 @@ class OpenshiftHelper implements Serializable {
         try {
             def tmp
             script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
+            script.echo "Raw template is ${tmplName}"
             tmp = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'", returnStdout: true
             if (tmp) {
                 def strParams = this.getParams(tmp.tokenize("\n"))
