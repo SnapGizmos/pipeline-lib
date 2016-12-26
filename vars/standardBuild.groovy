@@ -48,6 +48,7 @@ def origin(body) {
 
         if ('Deploy DEV' in config.targetStages)
         stage('Deploy DEV') {
+            sh "oc get pods -n ${config.namespace}"
             sh "oc get projects -n ${config.namespace}"
             sh "oc project ${config.namespace}"
             sh "oc get pods -n ${config.namespace}"
@@ -68,10 +69,9 @@ def origin(body) {
             writeFile file:'openshift/env', text: params
             sh "cat $WORKSPACE/openshift/env "
 
+            def oscli
             try {
-//                def oscli = new OpenshiftHelper('this','config');
-                def oscli = new OpenshiftHelper(this,config);
-//            def oscli = new OpenshiftHelper();
+                oscli = new OpenshiftHelper(this,config);
                 println "openshift cli is : ${oscli}"
                 oscli.testJson()
             } catch (Exception e) {
@@ -80,7 +80,7 @@ def origin(body) {
 //            testJson(config.tmplOpenshift)
 //            sh "bin/render-template.sh ${config.namespace}"
             def strFile = readFile file: "openshift/templates/${config.tmplOpenshift}"
-            println "files has: ${strFile.length()}"
+            println "BEFORE helper files has: ${strFile.length()}"
 
             try {
                 oscli.processTemplate(config.tmplOpenshift)

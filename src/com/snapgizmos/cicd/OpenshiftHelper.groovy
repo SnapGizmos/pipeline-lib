@@ -30,7 +30,7 @@ class OpenshiftHelper implements Serializable {
         script.echo "OpenshiftHelper.testJson() Config is actually '${config}' "
         def strFile = script.readFile file: "openshift/templates/test.json"
         def jsonArray = new JSONObject( strFile )
-        script.echo jsonArray
+        script.echo jsonArray.toString()
     }
 
     def processTemplate(def tname) {
