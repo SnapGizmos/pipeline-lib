@@ -118,7 +118,7 @@ class OpenshiftHelper implements Serializable {
         def params = ''
         if (!keys) {
             keys = this.config.environment.keySet() as String[]
-        } elseif (keys in String) {
+        } else if (keys in String) {
             this.script.echo "OpenshiftHelper.getParams(${keys}) of class ${keys.getCanonicalName()}"
         }
         def j = keys.size()
