@@ -58,17 +58,14 @@ class OpenshiftHelper implements Serializable {
         }
         script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
         script.echo "Raw template is ${tmplName}"
-        def rawParams = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'", returnStdout: true
-        script.echo "Raw params is ${rawParams}"
-        def tmpVar3= rawParams.split("\n").collect {script.echo "collect has ${it} "; it as String}
-        script.echo "${rawParams.getClass()} prrarams tmpVar3 ${tmpVar3.getClass().toString()} / \n${tmpVar3} "
-        def tmpVar2 = rawParams.split("\n")
-        script.echo "${rawParams.getClass()} prrarams tmpVar2 ${tmpVar2.getClass().toString()} / \n${tmpVar2} "
-        for (def i = 0; i<tmpVar2.size(); i++) {
+        def tmp = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'", returnStdout: true
+        def rawParams2 = tmp.tokenize("\n")
+        script.echo "Raw params2 is ${rawParams2} of class ${rawParams2.getClass().getName()}"
+        def rawParams = tmp.split("\n")
+        script.echo "Raw params is ${rawParams} of class ${rawParams.getClass().getName()}"
+        for (def i = 0; i<rawParams.size(); i++) {
             script.echo "got item ${tmpVar2[i]}"
         }
-        def tmpVar = Eval.me(tmpVar2.toString())
-        script.echo " prrarams is ${tmpVar.getClass()} / ${tmpVar} "
 
         /** **
          2.- parse template file so we can get the objects within. The idea here is to be able to
@@ -121,6 +118,8 @@ class OpenshiftHelper implements Serializable {
         def params = ''
         if (!keys) {
             keys = this.config.environment.keySet() as String[]
+        } elseif (keys in String) {
+            this.script.echo "OpenshiftHelper.getParams(${keys}) of class ${keys.getCanonicalName()}"
         }
         def j = keys.size()
         for (def i = 0; i < j; i++) {
