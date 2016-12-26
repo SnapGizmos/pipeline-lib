@@ -48,16 +48,16 @@ class OpenshiftHelper implements Serializable {
         def yamlOldParser
         def tmplName
 
-//        try {
+        try {
             yamlNewParser = ymlNewTemplate.load(strFile)
             tmplName = yamlNewParser.get('metadata').get('name').toString()
             script.echo "tmplName = ${tmplName}"
-//        } catch (Exception e) {
-//            script.echo "Silengly ignoring _expected_ exception .. "
-//            script.echo "toString ${e.toString()} "
-//            script.echo "getMessage ${e.getMessage()} "
-//            throw e
-//        }
+        } catch (Exception e) {
+            script.echo "Silengly ignoring _expected_ exception .. "
+            script.echo "toString ${e.toString()} "
+            script.echo "getMessage ${e.getMessage()} "
+            throw e
+        }
         script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
         script.echo "Raw template is ${tmplName}"
         def tmp = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'", returnStdout: true
@@ -65,7 +65,14 @@ class OpenshiftHelper implements Serializable {
         def strTemplate = script.sh script: "oc process -n ${this.config.namespace} -o yaml ${tmplName} ${strParams} ", returnStdout: true
 
         script.echo strTemplate
-        yamlOldParser = ymlOldTemplate.load(strTemplate)
+        try {
+            yamlOldParser = ymlOldTemplate.load(strTemplate)
+        } catch (Exception e) {
+            script.echo "Silengly ignoring _expected_ exception .. "
+            script.echo "toString ${e.toString()} "
+            script.echo "getMessage ${e.getMessage()} "
+            throw e
+        }
         /** **
          2.- parse template file so we can get the objects within. The idea here is to be able to
          delete them from the openshift cluster, so objects get refreshed when reprocessing the template
