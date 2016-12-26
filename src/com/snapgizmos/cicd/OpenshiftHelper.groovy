@@ -60,12 +60,11 @@ class OpenshiftHelper implements Serializable {
          delete them from the openshift cluster, so objects get refreshed when reprocessing the template
          /** **/
         script.echo "OpenshiftHelper.processTemplate($tname) 2.- parse template file so we can get the objects for deletion related to the template "
-        def keys = yamlParser.get('objects') as String[]
-        def j = keys.size()
-        script.echo "template class is ${yamlParser.getClass()} with these keys ${keys} "
+        def aObj = yamlParser.get('objects')
+        def j = aObj.size()
+        script.echo "template class is ${yamlParser.getClass()} "
         for (int i = 0; i < j; i++) {
-            def key = keys[i]
-            def itm = yamlParser.get('objects').get(key)
+            def itm = aObj[i]
             script.echo "Iterating over ${itm} "
             script.sh "echo oc delete ${itm['kind']}/${itm['metadata']['name']} -n poclab "
         }
