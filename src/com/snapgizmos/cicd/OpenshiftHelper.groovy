@@ -81,11 +81,11 @@ class OpenshiftHelper implements Serializable {
     }
 
     def renderParams() {
-        println "config environments are: " + config.environment.size()
+        println "config environments vars #: " + this.config.environment.size()
         def params = ''
-        def j = config.environment.size()
+        def j = this.config.environment.size()
         for (def i=0; i<j; i++) {
-            def itm = config.environment[i]
+            def itm = this.config.environment[i]
             this.script.echo "going over ${itm.key}=${itm.value} for " + System.getenv('WORKSPACE')
 //                sh "echo ${itm.key}=${itm.value} >> $WORKSPACE/openshift/env"
             params = "${params}${itm.key}=\'${itm.value}\'\n"
