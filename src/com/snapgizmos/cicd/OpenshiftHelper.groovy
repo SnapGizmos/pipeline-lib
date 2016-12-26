@@ -70,7 +70,6 @@ class OpenshiftHelper implements Serializable {
             }
         } catch (Exception e) {
             script.echo e.dump()
-//            throw e
         }
 
         /** **
@@ -137,17 +136,26 @@ class OpenshiftHelper implements Serializable {
         /** **
          4.- compile the parameters from the configuration environment that this template asks for within the parameters
          /** **/
-        script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
-        tmp = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'", returnStdout: true
-        strParams = this.getParams(tmp.tokenize("\n"))
-        strTemplate = script.sh script: "oc process -n ${this.config.namespace} -o yaml ${tmplName} ${strParams} ", returnStdout: true
-        script.echo strTemplate
+        try {
+            def tmp
+            script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
+            tmp = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'", returnStdout: true
+            if (tmp) {
+                def strParams = this.getParams(tmp.tokenize("\n"))
+                strTemplate = script.sh script: "oc process -n ${this.config.namespace} -o yaml ${tmplName} ${strParams} ", returnStdout: true
+                script.echo strTemplate
+            }
+        } catch (Exception e) {
+            script.echo e.dump()
+        }
 
         /** **
          5.- render the template with all of the matching parameters, so objects are created
          /** **/
         try {
-            script.openshiftCreateResource jsonyaml: strTemplate, namespace: config.namespace, verbose: 'false'
+            if (strTemplate) {
+                script.openshiftCreateResource jsonyaml: strTemplate, namespace: config.namespace, verbose: 'false'
+            }
         } catch (Exception e) {
             script.echo "Silengly ignoring exception : "
 //        script.echo e.getStackTrace()
