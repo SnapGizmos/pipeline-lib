@@ -129,10 +129,11 @@ class OpenshiftHelper implements Serializable {
         try {
             script.echo "OpenshiftHelper.processTemplate($tname) 3.- create this new template we have on file "
             script.echo "------------------- This is the Actual TeMPLate ----------------"
-            script.echo strFile
+//            script.echo strFile
             script.openshiftCreateResource jsonyaml: strFile, namespace: config.namespace, verbose: 'true'
         } catch (Exception e) {
             script.echo "While creatingResource - Silengly ignoring exception : "
+            script.sh "oc get template/${tmplName}"
 //        script.echo e.getStackTrace()
             script.echo e.dump()
         }
@@ -163,7 +164,7 @@ class OpenshiftHelper implements Serializable {
         try {
             script.echo "OpenshiftHelper.processTemplate($tname) 5.- render the template with all of the matching parameters, so objects are created"
             if (strTemplate) {
-                script.echo strTemplate
+//                script.echo strTemplate
                 script.openshiftCreateResource jsonyaml: strTemplate, namespace: config.namespace, verbose: 'false'
             }
         } catch (Exception e) {
