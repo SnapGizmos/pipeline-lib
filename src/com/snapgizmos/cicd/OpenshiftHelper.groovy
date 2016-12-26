@@ -69,27 +69,19 @@ class OpenshiftHelper implements Serializable {
         def strParams = this.getParams(tmp.tokenize("\n"))
         def strTemplate = script.sh script: "oc process -n ${this.config.namespace} -o yaml ${tmplName} ${strParams} ", returnStdout: true
         script.echo strTemplate
-        def yamlParser
-//        try {
-//            def ymlTemplate = new Yaml()
-//            yamlParser = ymlTemplate.load(strTemplate)
-//        } catch (Exception e) {
-//            script.echo "Silengly ignoring _expected_ exception .. "
-//            script.echo "toString ${e.toString()} "
-//            script.echo "getMessage ${e.getMessage()} "
-//            throw e
-//        }
 
         /** **
          2.- parse template file so we can get the objects within. The idea here is to be able to
          delete them from the openshift cluster, so objects get refreshed when reprocessing the template
          /** **/
         script.echo "OpenshiftHelper.processTemplate($tname) 2.- parse old processed template file so we can get the objects for deletion related to the template "
+        def yamlParser
         def ymlTemplate = new Yaml()
         script.echo "Object created"
         yamlParser = ymlTemplate.load(strTemplate)
         script.echo "Object loaded ${yamlParser}"
-        def aObj = yamlParser.get('objects')
+        // TODO: Figure out why here it's items, and on a file it's called objects
+        def aObj = yamlParser.get('items')
         script.echo "aObjc is of class  ${aObj.getClass().getName()}"
         def j = aObj.size()
         script.echo "template class is ${yamlParser.getClass().getName()} "
