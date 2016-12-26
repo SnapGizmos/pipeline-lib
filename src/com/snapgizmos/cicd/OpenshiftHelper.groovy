@@ -66,7 +66,7 @@ class OpenshiftHelper implements Serializable {
             if (tmp) {
                 def strParams = this.getParams(tmp.tokenize("\n"))
                 strTemplate = script.sh script: "oc process -n ${this.config.namespace} -o yaml ${tmplName} ${strParams} ", returnStdout: true
-                script.echo "strTemplate = ${strTemplate}"
+//                script.echo "strTemplate = ${strTemplate}"
             }
         } catch (Exception e) {
             script.echo e.dump()
@@ -113,11 +113,12 @@ class OpenshiftHelper implements Serializable {
 //            script.sh "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n ${this.config.namespace} "
                     script.openshiftDeleteResourceByKey types: itm['kind'], keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'false'
                     script.echo "next!"
-                    script.sh "echo oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
+                    script.sh "echo oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} 2>&1"
                 } catch (Exception e) {
                     script.echo "i is ${i} "
                     def itm = aObj[i]
                     script.echo "Did _NOT_ delete entry ${itm['kind']} / ${itm['metadata']['name']}"
+                    script.sh "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} 2>&1"
 //                    script.echo e.dump()
                 }
             }
@@ -136,9 +137,11 @@ class OpenshiftHelper implements Serializable {
             script.echo "------------------- This is the Actual TeMPLate ----------------"
 //            script.echo strFile
             script.openshiftCreateResource jsonyaml: strFile, namespace: config.namespace, verbose: 'false'
+            script.echo 'status OK'
+            script.sh "oc get template/${tmplName} -n ${config.nameserver} "
         } catch (Exception e) {
             script.echo "While creatingResource - Silengly ignoring exception : "
-            script.sh "oc get template/${tmplName} 2>&1"
+            script.sh "oc get template/${tmplName} -n ${config.nameserver} 2>&1"
 //        script.echo e.getStackTrace()
             script.echo e.dump()
         }
@@ -148,6 +151,7 @@ class OpenshiftHelper implements Serializable {
          /** **/
         try {
             script.echo "OpenshiftHelper.processTemplate($tname) 4.- compile the parameters from the configuration environment that this template asks for within the parameters"
+            script.sh "oc get template/${tmplName} -n ${config.nameserver} 2>&1"
             script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
             script.sh "oc process --parameters -n ${this.config.namespace} ${tmplName} "
             script.echo "Raw template is ${tmplName}"
