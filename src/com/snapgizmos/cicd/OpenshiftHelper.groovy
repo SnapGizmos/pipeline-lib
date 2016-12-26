@@ -90,7 +90,6 @@ class OpenshiftHelper implements Serializable {
         try {
             script.openshiftDeleteResourceByKey types: 'template', keys: tmplName, namespace: this.config.namespace, verbose: 'false'
             script.echo "Now that we have deleted the template ... "
-
             if (strTemplate) {
                 script.openshiftDeleteResourceByJsonYaml jsonyaml: strTemplate, namespace: config.namespace, verbose: 'false'
             }
@@ -145,13 +144,14 @@ class OpenshiftHelper implements Serializable {
             script.echo "OpenshiftHelper.processTemplate($tname) 4.- compile the parameters from the configuration environment that this template asks for within the parameters"
             script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
             script.echo "Raw template is ${tmplName}"
+            script.sh "oc process --parameters -n ${this.config.namespace} ${tmplName} "
             def tmp = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'", returnStdout: true
             script.echo "tmp is ${tmp}"
             if (tmp) {
                 def strParams = this.getParams(tmp.tokenize("\n"))
                 script.echo "rendering template with these params: ${strParams}"
                 strTemplate = script.sh script: "oc process -n ${this.config.namespace} -o yaml ${tmplName} ${strParams} ", returnStdout: true
-//                script.echo strTemplate
+                script.echo "FINAL TEMPLATE ${strTemplate} "
             }
         } catch (Exception e) {
             script.echo e.dump()
