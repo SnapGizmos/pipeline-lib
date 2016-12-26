@@ -44,9 +44,9 @@ class OpenshiftHelper implements Serializable {
         script.echo "OpenshiftHelper.processTemplate($tname) 1.- obtain template name from the file, so we can then query the openshift api for stuff"
         def tmplName
 
+        def ymlTemplate = new Yaml()
+        def yamlParser
         try {
-            def ymlTemplate = new Yaml()
-            def yamlParser
             yamlParser = ymlTemplate.load(strFile)
             tmplName = yamlParser.get('metadata').get('name').toString()
             script.echo "tmplName = ${tmplName}"
@@ -101,8 +101,8 @@ class OpenshiftHelper implements Serializable {
         script.echo 'I believe we are done with deletion 1... '
         /** **/
         try {
-            def yamlParser
-            def ymlTemplate = new Yaml()
+//            def yamlParser
+//            def ymlTemplate = new Yaml()
             yamlParser = ymlTemplate.load(strTemplate)
             def aObj = yamlParser.get('items')
             def j = aObj.size()
@@ -113,6 +113,7 @@ class OpenshiftHelper implements Serializable {
 //            script.sh "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n ${this.config.namespace} "
                     script.openshiftDeleteResourceByKey types: itm['kind'], keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'false'
                     script.echo "next!"
+                    script.sh "echo oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
                 } catch (Exception e) {
                     script.echo "i is ${i} "
                     def itm = aObj[i]
@@ -134,7 +135,7 @@ class OpenshiftHelper implements Serializable {
             script.echo "OpenshiftHelper.processTemplate($tname) 3.- create this new template we have on file "
             script.echo "------------------- This is the Actual TeMPLate ----------------"
 //            script.echo strFile
-            script.openshiftCreateResource jsonyaml: strFile, namespace: config.namespace, verbose: 'true'
+            script.openshiftCreateResource jsonyaml: strFile, namespace: config.namespace, verbose: 'false'
         } catch (Exception e) {
             script.echo "While creatingResource - Silengly ignoring exception : "
             script.sh "oc get template/${tmplName} 2>&1"
