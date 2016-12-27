@@ -132,8 +132,13 @@ class OpenshiftHelper implements Serializable {
             script.echo "Did not _delete_ template contents .. in general"
             script.echo e.dump()
         }
+        script.echo "validations are ${validations.size()}"
         for (def i=0; i<validations.size(); i++) {
-            script.sh validations[i]
+            try {
+                script.sh validations[i]
+            } catch (Exception e) {
+                script.echo "DOES NOT EXIST"
+            }
         }
         /** **/
 
