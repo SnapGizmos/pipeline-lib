@@ -107,15 +107,19 @@ class OpenshiftHelper implements Serializable {
             def aObj = yamlParser.get('items')
             def j = aObj.size()
             for (int i = 0; i < j; i++) {
+                def itm = aObj[i]
                 try {
-                    def itm = aObj[i]
                     script.echo "Iterating over ${itm} "
                     script.sh "oc delete ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
 //                    script.openshiftDeleteResourceByKey types: itm['kind'].toString().toLowerCase(), keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'false'
-                    script.echo "Status OK"
-                    script.sh "echo oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
+                    def tmp = script.sh script: "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} ", returnStdout: 'true'
+                    script.echo "Status OK ${tmp}"
+                    if (tmp) {
+                        script.echo "DID NOT delete ${itm['kind']/${itm['metadata']['name']}}"
+                    } else {
+                        script.echo "SUCCESSFULL delete ${itm['kind']/${itm['metadata']['name']}}"
+                    }
                 } catch (Exception e) {
-                    def itm = aObj[i]
                     script.echo "Did _NOT_ delete entry ${itm['kind']}/${itm['metadata']['name']}"
                     script.sh "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
 //                    script.echo e.dump()
