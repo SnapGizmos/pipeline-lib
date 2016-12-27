@@ -111,13 +111,13 @@ class OpenshiftHelper implements Serializable {
                     def itm = aObj[i]
                     script.echo "Iterating over ${itm} "
 //            script.sh "echo oc delete ${itm['kind']}/${itm['metadata'].get('name')} -n ${this.config.namespace} "
-                    script.openshiftDeleteResourceByKey types: itm['kind'], keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'false'
-                    script.echo "next!"
-                    script.sh "echo oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} 2>&1"
+                    script.openshiftDeleteResourceByKey types: itm['kind'].toString().toLowerCase(), keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'false'
+                    script.echo "Status OK"
+                    script.sh "echo oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
                 } catch (Exception e) {
                     def itm = aObj[i]
                     script.echo "Did _NOT_ delete entry ${itm['kind']}/${itm['metadata']['name']}"
-//                    script.sh "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} 2>&1"
+                    script.sh "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
 //                    script.echo e.dump()
                 }
             }
