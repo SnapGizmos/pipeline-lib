@@ -100,6 +100,7 @@ class OpenshiftHelper implements Serializable {
         }
         script.echo 'I believe we are done with deletion 1... '
         /** **/
+        def validations=[]
         try {
             def yamlParser
             def ymlTemplate = new Yaml()
@@ -110,18 +111,19 @@ class OpenshiftHelper implements Serializable {
                 def itm = aObj[i]
                 try {
                     script.echo "Iterating over ${itm} "
-                    script.sh "oc delete ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
-//                    script.openshiftDeleteResourceByKey types: itm['kind'].toString().toLowerCase(), keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'false'
-                    def tmp = script.sh script: "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} ", returnStdout: 'true'
-                    script.echo "Status OK ${tmp}"
-                    if (tmp) {
-                        script.echo "DID NOT delete ${itm['kind']/${itm['metadata']['name']}}"
-                    } else {
-                        script.echo "SUCCESSFULL delete ${itm['kind']/${itm['metadata']['name']}}"
-                    }
+//                    script.sh "oc delete ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
+                    script.openshiftDeleteResourceByKey types: itm['kind'].toString().toLowerCase(), keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'false'
+//                    def tmp = script.sh script: "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} ", returnStdout: 'true'
+                    script.echo "Status OK "
+//                    if (tmp) {
+//                        script.echo "DID NOT delete ${itm['kind']/${itm['metadata']['name']}}"
+//                    } else {
+//                        script.echo "SUCCESSFULL delete ${itm['kind']/${itm['metadata']['name']}}"
+//                    }
                 } catch (Exception e) {
                     script.echo "Did _NOT_ delete entry ${itm['kind']}/${itm['metadata']['name']}"
-                    script.sh "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
+                    validations.add( "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} " )
+//                    script.sh "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
 //                    script.echo e.dump()
                 }
             }
@@ -129,6 +131,9 @@ class OpenshiftHelper implements Serializable {
         } catch (Exception e) {
             script.echo "Did not _delete_ template contents .. in general"
             script.echo e.dump()
+        }
+        for (def i=0; i<validations.size(); i++) {
+            script.sh validations[i]
         }
         /** **/
 
