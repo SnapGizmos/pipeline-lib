@@ -69,6 +69,7 @@ class OpenshiftHelper implements Serializable {
 //                script.echo "strTemplate = ${strTemplate}"
             }
         } catch (Exception e) {
+            script.echo 'most likely ... the template is no ther'
             script.echo e.dump()
         }
 
@@ -95,7 +96,7 @@ class OpenshiftHelper implements Serializable {
 //                script.openshiftDeleteResourceByJsonYaml jsonyaml: strTemplate, namespace: config.namespace, verbose: 'false'
 //            }
         } catch (Exception e) {
-//            script.echo "The deletion of the whole jsonyaml did not cut it ... "
+            script.echo "The deletion of the whole jsonyaml did not cut it ... "
 //            script.echo e.dump()
         }
         script.echo 'I believe we are done with deletion 1... '
@@ -122,7 +123,7 @@ class OpenshiftHelper implements Serializable {
 //                    }
                 } catch (Exception e) {
                     script.echo "Did _NOT_ delete entry ${itm['kind']}/${itm['metadata']['name']}"
-                    validations.add( "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} " )
+                    validations.push( "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} " )
 //                    script.sh "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
 //                    script.echo e.dump()
                 }
