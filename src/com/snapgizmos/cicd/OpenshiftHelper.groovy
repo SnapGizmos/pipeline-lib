@@ -156,7 +156,6 @@ class OpenshiftHelper implements Serializable {
             script.echo "oc get template/${tmplName} -n ${config.nameserver} "
         } catch (Exception e) {
             script.echo "While creatingResource - Silengly ignoring exception : "
-            script.sh "oc get template/${tmplName} -n ${config.nameserver} "
 //        script.echo e.getStackTrace()
             script.echo e.dump()
         }
