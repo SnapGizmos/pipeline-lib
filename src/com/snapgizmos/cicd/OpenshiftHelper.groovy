@@ -101,7 +101,7 @@ class OpenshiftHelper implements Serializable {
         }
         script.echo 'I believe we are done with deletion 1... '
         /** **/
-        def tmplItems = []
+        def tmplItems = new HashMap()
         try {
             def yamlParser
             def ymlTemplate = new Yaml()
@@ -138,11 +138,13 @@ class OpenshiftHelper implements Serializable {
         try {
             script.echo "validations are ${tmplItems.size()}"
             def keys = tmplItems.keySet() as String[]
-            for (def i = 0; i < tmplItems.size(); i++) {
+            for (def i = 0; i < keys.size(); i++) {
                 try {
-                    def key = keys[i]
                     script.echo tmplItems[key]
-                    script.sh "oc describe ${key}/${tmplItems[key]['name']} "
+                    def key = keys[i]
+                    for (def j = 0; j < tmplItems[key].size(); j++) {
+                        script.sh "oc describe ${key}/${tmplItems[key][j]['name']} "
+                    }
                 } catch (Exception e) {
                     script.echo "DOES NOT EXIST"
                 }
