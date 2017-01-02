@@ -175,8 +175,10 @@ class OpenshiftHelper implements Serializable {
          /** **/
         try {
             script.echo "OpenshiftHelper.processTemplate($tname) 4.- compile the parameters from the configuration environment that this template asks for within the parameters"
-            script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
-            script.sh "oc describe template/${tmplName} -n ${config.nameserver} "
+//            script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
+            script.echo "describe template/${tmplName} "
+            script.sh "oc get templates -n ${config.nameserver} "
+            script.echo "process template/${tmplName} "
             script.sh "oc process --parameters -n ${this.config.namespace} ${tmplName} "
             script.echo "Raw template is ${tmplName}"
             def tmp = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'", returnStdout: true
@@ -203,7 +205,7 @@ class OpenshiftHelper implements Serializable {
         } catch (Exception e) {
             script.echo "Silengly ignoring exception : "
 //        script.echo e.getStackTrace()
-            script.echo e.toString()
+            script.echo e.dump()
         }
 
         /** **
