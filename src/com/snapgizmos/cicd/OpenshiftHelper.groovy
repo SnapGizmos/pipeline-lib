@@ -77,7 +77,7 @@ class OpenshiftHelper implements Serializable {
          2.- parse template file so we can get the objects within. The idea here is to be able to
          delete them from the openshift cluster, so objects get refreshed when reprocessing the template
          /** **/
-        script.echo "OpenshiftHelper.processTemplate($tname) 2.- parse old processed template file so we can get the objects for deletion related to the template "
+        script.echo "OpenshiftHelper.processTemplate($tname) 2.- parse old processed template so we can get the objects for deletion related to the template "
         /** **
          def yamlParser
          def ymlTemplate = new Yaml()
@@ -101,7 +101,7 @@ class OpenshiftHelper implements Serializable {
         }
         script.echo 'I believe we are done with deletion 1... '
         /** **/
-        def validations=[]
+        def tmplItems = []
         try {
             def yamlParser
             def ymlTemplate = new Yaml()
@@ -111,6 +111,8 @@ class OpenshiftHelper implements Serializable {
             for (int i = 0; i < j; i++) {
                 def itm = aObj[i]
                 try {
+                    if (!tmplItems[itm['kind']]) tmplItems[itm['kind']] = []
+                    tmplItems[itm['kind']].add(itm)
                     script.echo "Iterating over ${itm} "
 //                    script.sh "oc delete ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
                     script.openshiftDeleteResourceByKey types: itm['kind'].toString().toLowerCase(), keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'false'
@@ -123,7 +125,7 @@ class OpenshiftHelper implements Serializable {
 //                    }
                 } catch (Exception e) {
                     script.echo "Did _NOT_ delete entry ${itm['kind']}/${itm['metadata']['name']}"
-                    validations.push( "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} " )
+                    tmplItems.push("oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} ")
 //                    script.sh "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
 //                    script.echo e.dump()
                 }
@@ -133,13 +135,21 @@ class OpenshiftHelper implements Serializable {
             script.echo "Did not _delete_ template contents .. in general"
             script.echo e.dump()
         }
-        script.echo "validations are ${validations.size()}"
-        for (def i=0; i<validations.size(); i++) {
-            try {
-                script.sh validations[i]
-            } catch (Exception e) {
-                script.echo "DOES NOT EXIST"
+        try {
+            script.echo "validations are ${tmplItems.size()}"
+            def keys = tmplItems.keySet() as String[]
+            for (def i = 0; i < tmplItems.size(); i++) {
+                try {
+                    def key = keys[i]
+                    script.echo tmplItems[key]
+                    script.sh "oc describe ${key}/${tmplItems[key]['name']} "
+                } catch (Exception e) {
+                    script.echo "DOES NOT EXIST"
+                }
             }
+        } catch (Exception e) {
+            script.echo "Did not _VALIDATE template contents .. in general"
+            script.echo e.dump()
         }
         /** **/
 
@@ -152,8 +162,6 @@ class OpenshiftHelper implements Serializable {
 //            script.echo strFile
             script.openshiftCreateResource jsonyaml: strFile, namespace: config.namespace, verbose: 'false'
             script.echo 'status OK'
-            script.sh "oc get template/${tmplName} -n ${config.nameserver} "
-            script.echo "oc get template/${tmplName} -n ${config.nameserver} "
         } catch (Exception e) {
             script.echo "While creatingResource - Silengly ignoring exception : "
 //        script.echo e.getStackTrace()
@@ -165,8 +173,8 @@ class OpenshiftHelper implements Serializable {
          /** **/
         try {
             script.echo "OpenshiftHelper.processTemplate($tname) 4.- compile the parameters from the configuration environment that this template asks for within the parameters"
-            script.sh "oc describe template/${tmplName} -n ${config.nameserver} "
             script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
+            script.sh "oc describe template/${tmplName} -n ${config.nameserver} "
             script.sh "oc process --parameters -n ${this.config.namespace} ${tmplName} "
             script.echo "Raw template is ${tmplName}"
             def tmp = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'", returnStdout: true
