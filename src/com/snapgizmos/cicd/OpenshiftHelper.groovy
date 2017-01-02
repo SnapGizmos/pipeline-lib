@@ -142,6 +142,7 @@ class OpenshiftHelper implements Serializable {
                     def key = keys[i]
                     script.echo "key: ${key} : size: ${tmplItems[key].size()}"
                     for (def j = 0; j < tmplItems[key].size(); j++) {
+                        script.echo "oc describe ${key}/${tmplItems[key][j]['name']} -n ${this.config.namespace} "
                         script.sh "oc describe ${key}/${tmplItems[key][j]['name']} -n ${this.config.namespace} "
                     }
                 } catch (Exception e) {
@@ -177,11 +178,11 @@ class OpenshiftHelper implements Serializable {
             script.echo "OpenshiftHelper.processTemplate($tname) 4.- compile the parameters from the configuration environment that this template asks for within the parameters"
 //            script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
             script.echo "describe template/${tmplName} "
-            script.sh "oc get templates -n ${config.nameserver} "
+            script.sh "oc get templates -n ${config.nameserver} 2>/dev/stdout || echo 'sh failed' "
             script.echo "process template/${tmplName} "
-            script.sh "oc process --parameters -n ${this.config.namespace} ${tmplName} "
+            script.sh "oc process --parameters -n ${this.config.namespace} ${tmplName} 2>/dev/stdout || echo 'sh failed' "
             script.echo "Raw template is ${tmplName}"
-            def tmp = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'", returnStdout: true
+            def tmp = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$' || echo 'sh failed'", returnStdout: true
             script.echo "tmp is ${tmp}"
             if (tmp) {
                 def strParams = this.getParams(tmp.tokenize("\n"))
