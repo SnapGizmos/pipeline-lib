@@ -125,8 +125,8 @@ class OpenshiftHelper implements Serializable {
 //                    }
                 } catch (Exception e) {
                     script.echo "Did _NOT_ delete entry ${itm['kind']}/${itm['metadata']['name']}"
-//                    script.sh "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
-                    script.echo e.dump()
+                    script.sh "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} 2>/dev/stdout || echo 'sh failed' "
+//                    script.echo e.dump()
                 }
             }
             println('phony')
@@ -140,8 +140,9 @@ class OpenshiftHelper implements Serializable {
             for (def i = 0; i < keys.size(); i++) {
                 try {
                     def key = keys[i]
-                    script.echo "key: ${key} : size: ${tmplItems[key].size()}"
+                    script.echo "key: ${key} : size: ${tmplItems[key].toString()}"
                     for (def j = 0; j < tmplItems[key].size(); j++) {
+                        script.echo "Hash : ${tmplItems[key][j]} "
                         script.echo "oc describe ${key}/${tmplItems[key][j]['name']} -n ${this.config.namespace} "
                         script.sh "oc describe ${key}/${tmplItems[key][j]['name']} -n ${this.config.namespace} 2>/dev/stdout || echo 'sh failed' "
                     }
