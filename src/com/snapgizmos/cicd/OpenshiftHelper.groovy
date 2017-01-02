@@ -126,7 +126,7 @@ class OpenshiftHelper implements Serializable {
                 } catch (Exception e) {
                     script.echo "Did _NOT_ delete entry ${itm['kind']}/${itm['metadata']['name']}"
 //                    script.sh "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
-//                    script.echo e.dump()
+                    script.echo e.dump()
                 }
             }
             println('phony')
@@ -139,13 +139,15 @@ class OpenshiftHelper implements Serializable {
             def keys = tmplItems.keySet() as String[]
             for (def i = 0; i < keys.size(); i++) {
                 try {
-                    script.echo tmplItems[key]
                     def key = keys[i]
+                    script.echo "key: ${key} : ${tmplItems}"
+                    script.echo tmplItems[key]
                     for (def j = 0; j < tmplItems[key].size(); j++) {
                         script.sh "oc describe ${key}/${tmplItems[key][j]['name']} -n ${this.config.namespace} "
                     }
                 } catch (Exception e) {
-                    script.echo "DOES NOT EXIST"
+                    script.echo "DOES NOT EXIST "
+                    script.echo e.dump()
                 }
             }
         } catch (Exception e) {
