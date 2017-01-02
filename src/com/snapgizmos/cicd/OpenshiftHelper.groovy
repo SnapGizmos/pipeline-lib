@@ -156,12 +156,12 @@ class OpenshiftHelper implements Serializable {
                         script.echo "key: ${key} Hash : ${tmplItems[key][j]} "
                         try {
                             for (def k = 0; k < 10; k++) {
-                                script.echo "Trying ${key}/${tmplItems[key][j]['metadata']['name']} .. ${k}"
+                                script.echo "Testing ${key}/${tmplItems[key][j]['metadata']['name']} .. for deleteion # ${k}"
                                 script.sh "oc get ${key}/${tmplItems[key][j]['metadata']['name']} -n ${this.config.namespace} "
                                 sleep(30000)
                             }
                         } catch (Exception e) {
-                            script.echo "YES .. ${key}/${tmplItems[key][j]['metadata']['name']} NOT FOUND! "
+                            script.echo "Successfully deleted ${key}/${tmplItems[key][j]['metadata']['name']} . "
                         }
                     }
                 } catch (Exception e) {
