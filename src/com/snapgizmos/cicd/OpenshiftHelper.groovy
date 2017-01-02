@@ -33,6 +33,17 @@ class OpenshiftHelper implements Serializable {
         script.echo jsonArray.toString()
     }
 
+    def deleteWaitResourceByJsonYaml(String jsonyaml, String namespace = null, boolean verbose = false, int wait = 30) {
+        // 1.- Parse the jsonyaml in order to fetch the list of objects
+        try {
+
+        } catch (Exception e) {
+
+        }
+
+        // 1.- call the openshift-pipeline-plugin with the jsonyaml in order to get the deletions going ..
+    }
+
     def processTemplate(def tname) {
         println "Config is actually ${this.config}"
         script.echo "Config is actually '${this.config}' "
@@ -92,9 +103,9 @@ class OpenshiftHelper implements Serializable {
         try {
             script.openshiftDeleteResourceByKey types: 'template', keys: tmplName, namespace: this.config.namespace, verbose: 'false'
             script.echo "Now that we have deleted the template ... "
-//            if (strTemplate) {
-//                script.openshiftDeleteResourceByJsonYaml jsonyaml: strTemplate, namespace: config.namespace, verbose: 'false'
-//            }
+            if (strTemplate) {
+                script.openshiftDeleteResourceByJsonYaml jsonyaml: strTemplate, namespace: config.namespace, verbose: 'false'
+            }
         } catch (Exception e) {
             script.echo "The deletion of the whole jsonyaml did not cut it ... "
 //            script.echo e.dump()
@@ -115,7 +126,7 @@ class OpenshiftHelper implements Serializable {
                     tmplItems[itm['kind']].add(itm)
                     script.echo "Iterating over ${itm} "
 //                    script.sh "oc delete ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
-                    script.openshiftDeleteResourceByKey types: itm['kind'].toString().toLowerCase(), keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'false'
+//                    script.openshiftDeleteResourceByKey types: itm['kind'].toString().toLowerCase(), keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'false'
 //                    def tmp = script.sh script: "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} ", returnStdout: 'true'
                     script.echo "Status OK "
 //                    if (tmp) {
@@ -140,11 +151,18 @@ class OpenshiftHelper implements Serializable {
             for (def i = 0; i < keys.size(); i++) {
                 try {
                     def key = keys[i]
-                    script.echo "key: ${key} : size: ${tmplItems[key].toString()}"
+//                    script.echo "key: ${key} : size: ${tmplItems[key].size()}"
                     for (def j = 0; j < tmplItems[key].size(); j++) {
-                        script.echo "Hash : ${tmplItems[key][j]} "
-                        script.echo "oc describe ${key}/${tmplItems[key][j]['metadata']['name']} -n ${this.config.namespace} "
-                        script.sh "oc describe ${key}/${tmplItems[key][j]['metadata']['name']} -n ${this.config.namespace} 2>/dev/stdout || echo 'sh failed' "
+                        script.echo "key: ${key} Hash : ${tmplItems[key][j]} "
+                        try {
+                            for (def k = 0; k < 10; k++) {
+                                script.echo "Trying ${key}/${tmplItems[key][j]['metadata']['name']} .. ${k}"
+                                script.sh "oc get ${key}/${tmplItems[key][j]['metadata']['name']} -n ${this.config.namespace} "
+                                sleep(30000)
+                            }
+                        } catch (Exception e) {
+                            script.echo "YES .. NOT FOUND! "
+                        }
                     }
                 } catch (Exception e) {
                     script.echo "DOES NOT EXIST "
