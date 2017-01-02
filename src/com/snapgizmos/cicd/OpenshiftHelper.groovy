@@ -140,8 +140,7 @@ class OpenshiftHelper implements Serializable {
             for (def i = 0; i < keys.size(); i++) {
                 try {
                     def key = keys[i]
-                    script.echo "key: ${key} : ${tmplItems}"
-                    script.echo tmplItems[key]
+                    script.echo "key: ${key} : size: ${tmplItems[key].size()}"
                     for (def j = 0; j < tmplItems[key].size(); j++) {
                         script.sh "oc describe ${key}/${tmplItems[key][j]['name']} -n ${this.config.namespace} "
                     }
