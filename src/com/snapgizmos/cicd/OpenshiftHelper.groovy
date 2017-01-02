@@ -125,7 +125,6 @@ class OpenshiftHelper implements Serializable {
 //                    }
                 } catch (Exception e) {
                     script.echo "Did _NOT_ delete entry ${itm['kind']}/${itm['metadata']['name']}"
-                    tmplItems.push("oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} ")
 //                    script.sh "oc get ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
 //                    script.echo e.dump()
                 }
