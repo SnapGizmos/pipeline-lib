@@ -161,7 +161,7 @@ class OpenshiftHelper implements Serializable {
                                 sleep(30000)
                             }
                         } catch (Exception e) {
-                            script.echo "YES .. NOT FOUND! "
+                            script.echo "YES .. ${key}/${tmplItems[key][j]['metadata']['name']} NOT FOUND! "
                         }
                     }
                 } catch (Exception e) {
