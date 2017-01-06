@@ -197,12 +197,12 @@ class OpenshiftHelper implements Serializable {
             script.echo "OpenshiftHelper.processTemplate($tname) 4.- compile the parameters from the configuration environment that this template asks for within the parameters"
 //            script.echo "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$'"
             script.echo "describe template/${tmplName} "
-            script.sh "oc get templates -n ${config.nameserver} 2>/dev/stdout || echo 'sh failed' "
-            script.echo "process template/${tmplName} "
-            script.sh "oc process --parameters -n ${this.config.namespace} ${tmplName} 2>/dev/stdout || echo 'sh failed' "
+            script.sh "oc describe templates/${tmplName} -n ${config.nameserver} 2>/dev/stdout || echo 'sh failed' "
+//            script.echo "process template/${tmplName} "
+//            script.sh "oc process --parameters -n ${this.config.namespace} ${tmplName} 2>/dev/stdout || echo 'sh failed' "
             script.echo "Raw template is ${tmplName}"
             def tmp = script.sh script: "oc process --parameters -n ${this.config.namespace} ${tmplName} | grep -oh '^\\w*' | grep -v '^NAME\$' || echo 'sh failed'", returnStdout: true
-            script.echo "tmp is ${tmp}"
+            script.echo "Template PARAMS: \n${tmp}"
             if (tmp) {
                 def strParams = this.getParams(tmp.tokenize("\n"))
                 script.echo "rendering template with these params: ${strParams}"
@@ -250,7 +250,7 @@ class OpenshiftHelper implements Serializable {
             def key = keys[i]
             def itm = this.config.environment[key]
 //            this.script.echo "going over ${key}=${itm} "
-            if (itm) params = "${params}${key}=\'${itm}\'\n"
+            if (itm) params = "${params}${key}=\'${itm}\' "
         }
         this.script.sh "echo params ${params} "
         return params
