@@ -154,7 +154,7 @@ class OpenshiftHelper implements Serializable {
                     def key = keys[i]
 //                    script.echo "key: ${key} : size: ${tmplItems[key].size()}"
                     for (def j = 0; j < tmplItems[key].size(); j++) {
-                        script.echo "key: ${key} Hash : ${tmplItems[key][j]} "
+                        script.echo "key: ${key} name on ${j} : ${tmplItems[key][j]} "
                         try {
                             for (def k = 0; k < 20; k++) {
                                 script.echo "Testing ${key}/${tmplItems[key][j]} .. for deleteion # ${k}"
@@ -162,7 +162,7 @@ class OpenshiftHelper implements Serializable {
                                 sleep(30000)
                             }
                         } catch (Exception e) {
-                            script.echo "Successfully deleted ${key}/${tmplItems[key][j]['metadata']['name']} . "
+                            script.echo "Successfully deleted ${key}/${tmplItems[key][j]} . "
                         }
                     }
                 } catch (Exception e) {
@@ -221,7 +221,7 @@ class OpenshiftHelper implements Serializable {
             script.echo "OpenshiftHelper.processTemplate($tname) 5.- render the template with all of the matching parameters, so objects are created"
             if (strTemplate) {
 //                script.echo strTemplate
-                script.openshiftCreateResource jsonyaml: strTemplate, namespace: ${this.config.namespace}, verbose: 'false'
+                script.openshiftCreateResource jsonyaml: strTemplate, namespace: config.namespace, verbose: 'false'
             }
         } catch (Exception e) {
             script.echo "Silengly ignoring exception : "
