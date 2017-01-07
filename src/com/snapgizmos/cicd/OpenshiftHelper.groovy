@@ -140,6 +140,8 @@ class OpenshiftHelper implements Serializable {
 //                    script.echo e.dump()
                 }
             }
+            script.echo "Adding the template now ... "
+            tmplItems['template'] = [yamlParser.get('metadata')['name']]
             println('phony')
         } catch (Exception e) {
             script.echo "Did not _delete_ template contents .. in general"
