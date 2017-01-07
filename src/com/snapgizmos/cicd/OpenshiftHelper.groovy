@@ -123,7 +123,7 @@ class OpenshiftHelper implements Serializable {
                 def itm = aObj[i]
                 try {
                     if (!tmplItems[itm['kind']]) tmplItems[itm['kind']] = []
-                    tmplItems[itm['kind']].add(itm)
+                    tmplItems[itm['kind']].add(itm['metadata']['name'])
                     script.echo "Iterating over ${itm} "
 //                    script.sh "oc delete ${itm['kind']}/${itm['metadata']['name']} -n ${this.config.namespace} "
 //                    script.openshiftDeleteResourceByKey types: itm['kind'].toString().toLowerCase(), keys: itm['metadata']['name'], namespace: this.config.namespace, verbose: 'false'
@@ -142,7 +142,6 @@ class OpenshiftHelper implements Serializable {
             }
             script.echo "Adding the template now ... "
             tmplItems['template'] = [yamlParser.get('metadata')['name']]
-            println('phony')
         } catch (Exception e) {
             script.echo "Did not _delete_ template contents .. in general"
             script.echo e.dump()
@@ -158,8 +157,8 @@ class OpenshiftHelper implements Serializable {
                         script.echo "key: ${key} Hash : ${tmplItems[key][j]} "
                         try {
                             for (def k = 0; k < 20; k++) {
-                                script.echo "Testing ${key}/${tmplItems[key][j]['metadata']['name']} .. for deleteion # ${k}"
-                                script.sh "oc get ${key}/${tmplItems[key][j]['metadata']['name']} -n ${this.config.namespace} "
+                                script.echo "Testing ${key}/${tmplItems[key][j]} .. for deleteion # ${k}"
+                                script.sh "oc get ${key}/${tmplItems[key][j]} -n ${this.config.namespace} "
                                 sleep(30000)
                             }
                         } catch (Exception e) {
