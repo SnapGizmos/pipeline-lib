@@ -48,7 +48,7 @@ def origin(body) {
                         }
                         ,
                         'Static Analysis': {
-                            sh "${mvnCmd} jacoco:report sonar:sonar -Dsonar.host.url=http://sonarqube:9000 -DskipTests=true"
+                            sh "${mvnCmd} org.jacoco:jacoco-maven-plugin:prepare-agent jacoco:report sonar:sonar -Dsonar.host.url=http://sonarqube:9000 -DskipTests=true"
                         }
                 )
             }
