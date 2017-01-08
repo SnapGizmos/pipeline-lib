@@ -48,7 +48,7 @@ def origin(body) {
                         }
                         ,
                         'Static Analysis': {
-                            sh "${mvnCmd} org.jacoco:jacoco-maven-plugin:prepare-agent "
+                            sh "${mvnCmd} clean org.jacoco:jacoco-maven-plugin:prepare-agent install "
 //                            sh "${mvnCmd} org.jacoco:jacoco-maven-plugin:prepare-agent jacoco:report sonar:sonar -Dsonar.host.url=http://sonarqube:9000 -DskipTests=true -Dsonar.jacoco.reportMissing.force.zero=true"
                             sh "${mvnCmd} org.jacoco:jacoco-maven-plugin:prepare-agent jacoco:report sonar:sonar -Dsonar.host.url=http://sonarqube:9000 -Dsonar.jacoco.reportMissing.force.zero=true"
                         }
