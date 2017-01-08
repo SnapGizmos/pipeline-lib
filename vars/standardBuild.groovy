@@ -33,12 +33,6 @@ def origin(body) {
             checkout scm
         }
 
-        if ('Build' in config.targetStages)
-            stage('Build') {
-                def v = version()
-                sh "${mvnCmd} clean install -DskipTests=true"
-            }
-
         if ('Test and Analysis' in config.targetStages)
             stage('Test and Analysis') {
                 parallel(
@@ -48,11 +42,17 @@ def origin(body) {
                         }
                         ,
                         'Static Analysis': {
-                            sh "${mvnCmd} clean org.jacoco:jacoco-maven-plugin:prepare-agent install "
+                            sh "${mvnCmd} clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Pcoverage-per-test "
 //                            sh "${mvnCmd} org.jacoco:jacoco-maven-plugin:prepare-agent jacoco:report sonar:sonar -Dsonar.host.url=http://sonarqube:9000 -DskipTests=true -Dsonar.jacoco.reportMissing.force.zero=true"
                             sh "${mvnCmd} org.jacoco:jacoco-maven-plugin:prepare-agent jacoco:report sonar:sonar -Dsonar.host.url=http://sonarqube:9000 -Dsonar.jacoco.reportMissing.force.zero=true"
                         }
                 )
+            }
+
+        if ('Build' in config.targetStages)
+            stage('Build') {
+                def v = version()
+                sh "${mvnCmd} clean install -DskipTests=true"
             }
 
         if ('Push to Nexus' in config.targetStages)
