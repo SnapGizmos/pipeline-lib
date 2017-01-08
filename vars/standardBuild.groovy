@@ -40,7 +40,7 @@ def origin(body) {
             }
 
         if ('Test and Analysis' in config.targetStages)
-            stage 'Test and Analysis' {
+            stage('Test and Analysis') {
                 parallel(
                         'Test': {
                             sh "${mvnCmd} test"
